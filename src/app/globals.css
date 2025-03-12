@@ -18,10 +18,30 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* css user dropdown */
+.user-dropdown .ant-dropdown-menu {
+  background-color: #1f1f1f !important; /* Màu nền theo ý bạn */
+  margin-top: 9px !important;
+  width: 200px;
+}
+
+.user-dropdown .ant-dropdown-menu-item {
+  color: white !important;
+  font-size: 15px !important;
+
+}
+
+.user-dropdown .ant-dropdown-menu-item:hover {
+  background-color: black !important;
 }
