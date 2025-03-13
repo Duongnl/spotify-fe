@@ -4,6 +4,9 @@ import "./globals.css";
 import Header from "@/components/shared/header";
 import "@fortawesome/fontawesome-free/css/all.min.css"
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { Row, Col } from "antd";
+import Sidebar from "@/components/shared/sidebar/sidebar";
+import MainLayout from "./main_layout";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,8 +36,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-          <Header />
-          {children}
+
+        <body>
+          <AntdRegistry>
+            <MainLayout>{children}</MainLayout>
+          </AntdRegistry>
+
+        </body>
+
+
       </body>
     </html>
   );

@@ -1,34 +1,51 @@
 "use client"
+import { useScreenSize } from '@/utils/resize';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Space } from 'antd';
 import { useState, useEffect } from "react";
-const Header = () => {
+import { GalleryHorizontalEnd, MoveRight, Plus } from "lucide-react"
+
+interface IProps {
+    isSideBarMobile: boolean,
+
+    isSidebarOpen: boolean,
+    setIsSidebarOpen: (v: boolean) => void
+
+}
+
+const Header = (props: IProps) => {
+
+    const { isSideBarMobile, isSidebarOpen, setIsSidebarOpen } = props
 
 
     const [isSearchDesktopOpen, setIsSearchDesktopOpen] = useState(false);
     const [isSearchMobileOpen, setIsSearchMobileOpen] = useState(false);
     const [search, setSearch] = useState<string>("")
 
-    // Khi resize màn hình, nếu lớn hơn 493px thì luôn hiển thị search bar
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth < 587) {
-                setIsSearchDesktopOpen(false);
-            }
+    const isSmallScreen = useScreenSize("(max-width: 587px)");
 
-            else if (window.innerWidth > 587) {
-                setIsSearchDesktopOpen(true);
-            }
-        };
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    useEffect(() => {
+        if (isSmallScreen) {
+            setIsSearchDesktopOpen(false);
+        } else {
+            setIsSearchDesktopOpen(true);
+        }
+    }, [isSmallScreen]);
+
 
     const handleShowSearchMobile = () => {
         if (isSearchMobileOpen) {
             setIsSearchMobileOpen(false);
         } else {
             setIsSearchMobileOpen(true);
+        }
+    }
+
+    const handleShowSidebarMobile = () => {
+        if (isSidebarOpen) {
+            setIsSidebarOpen(false);
+        } else {
+            setIsSidebarOpen(true);
         }
     }
 
@@ -55,9 +72,22 @@ const Header = () => {
 
     return (
         <>
-            <div className="flex w-full  h-[64px] p-[8px]  justify-between" >
+            <div className="flex w-full  h-[60px] p-[8px]  justify-between " >
 
                 <div className="flex items-center">
+
+                    {
+                        isSideBarMobile && (
+                            <>
+                                <button className="rounded-full bg-[#1f1f1f] text-[25px] h-full w-[48px] flex justify-center items-center"  
+                                onClick={() => {handleShowSidebarMobile()}}
+                                >
+                                    <GalleryHorizontalEnd size={30} className="cursor-pointer " />
+                                </button>
+                            </>
+                        )
+                    }
+
                     <i className="fa-brands fa-spotify ml-5 text-[35px]"></i>
                     <button className="rounded-full bg-[#1f1f1f] ml-5 text-[25px] h-full w-[48px]"  >  <i className="fa-solid fa-house "></i> </button>
 
@@ -89,7 +119,7 @@ const Header = () => {
 
 
                 <div className="flex items-center div-user-noti">
-                    <button className='mr-10 ml-10'>
+                    <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'>
                         <i className=" text-[25px] fa-solid fa-bell"></i>
                     </button>
 
@@ -114,7 +144,7 @@ const Header = () => {
                                 type="text"
                                 placeholder="Search"
                                 className="text-[15px] w-full bg-[#1f1f1f]/90 focus-visible:outline-none
-      absolute top-0 left-0 z-50 p-3 rounded-md shadow-lg"
+      absolute top-0 left-0 z-[9999] p-3 rounded-md shadow-lg"
                             />
                             {/* Lớp phủ mờ riêng biệt */}
                             <div className="absolute inset-0 bg-[#1f1f1f]/50 backdrop-blur-lg z-[-1] rounded-md"></div>
