@@ -66,5 +66,23 @@ body {
 
 }
 
+/* Tùy chỉnh scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Độ rộng của thanh scroll */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Nền của track scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2); /* Màu của thanh cuộn */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4); /* Màu khi hover */
+}
+
 
 /* 588 */
