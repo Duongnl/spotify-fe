@@ -22,7 +22,7 @@ export default function PublicPlaylists() {
       id: "2",
       title: "Danh sách phát của tôi nè...",
       creator: "DuonggNl",
-      image: "/placeholder.svg?height=300&width=300",
+      image: "/danhdoi.png?height=300&width=300",
     },
     {
       id: "1",

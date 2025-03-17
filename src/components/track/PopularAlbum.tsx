@@ -5,69 +5,50 @@ import { ChevronRight } from "lucide-react"
 
 interface Release {
   title: string
-  year: number
-  type: "Album" | "Single"
-  artwork: string
-  featuring?: string
+  year: string
+  type: string
+  image: string
 }
+
 
 export default function PopularReleases() {
   const releases: Release[] = [
     {
       title: "Đánh Đổi",
-      year: 2023,
+      year: "2023",
       type: "Album",
-      artwork: "/danhdoi.png",
+      image: "/danhdoi.png",
     },
     {
       title: "Simple Love",
-      year: 2022,
+      year: "2022",
       type: "Single",
-      artwork: "/danhdoi.png",
+      image: "/danhdoi.png",
     },
     {
-      title: "Shay nắnggg",
-      year: 2022,
+      title: "Shay năngggg",
+      year: "2022",
       type: "Single",
-      artwork: "/danhdoi.png",
+      image: "/danhdoi.png",
     },
     {
       title: "Phong Long",
-      year: 2024,
+      year: "2024",
       type: "Single",
-      artwork: "/danhdoi.png",
+      image: "/danhdoi.png",
     },
     {
-      title: "When You Look at Me",
-      year: 2024,
+      title: "When You Look at Me (feat. Seachains)",
+      year: "2019",
       type: "Single",
-      artwork: "/danhdoi.png",
-      featuring: "Seachains",
+      image: "/danhdoi.png",
     },
     {
       title: "Si me you",
-      year: 2022,
+      year: "2022",
       type: "Single",
-      artwork: "/danhdoi.png",
+      image: "/danhdoi.png",
     },
-    {
-        title: "Si me you",
-        year: 2022,
-        type: "Single",
-        artwork: "/danhdoi.png",
-      },
-      {
-        title: "Si me you",
-        year: 2022,
-        type: "Single",
-        artwork: "/danhdoi.png",
-      },
-      {
-        title: "Si me you",
-        year: 2022,
-        type: "Single",
-        artwork: "/danhdoi.png",
-      },
   ]
 
   return (
@@ -81,29 +62,26 @@ export default function PopularReleases() {
     </div>
   
     <div className="w-full pb-4">
-      <div className="flex flex-wrap gap-6">
-        {releases.slice(0, 6).map((release, index) => (
-          <div key={index} className="group cursor-pointer w-48 transition-transform hover:scale-105">
-            <div className="relative aspect-square w-48 mb-4">
-              <Image
-                src={release.artwork || "/danhdoi.png"}
-                alt={release.title}
-                fill
-                className="object-cover rounded-md "
-              />
+       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {releases.map((release, index) => (
+                <div key={index} className="group">
+                  <div className="relative aspect-square mb-4">
+                    <Image
+                      src={release.image || "/placeholder.svg"}
+                      alt={release.title}
+                      fill
+                      className="object-cover rounded-md transition-transform group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-medium line-clamp-2 group-hover:text-white">{release.title}</h3>
+                    <p className="text-sm text-gray-400">
+                      {release.year} • {release.type}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold truncate">
-                {release.title}
-                {release.featuring && <span className="text-gray-400"> (feat. {release.featuring})</span>}
-              </h3>
-              <p className="text-sm text-gray-400">
-                {release.year} • {release.type}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   </div>
   

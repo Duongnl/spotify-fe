@@ -1,5 +1,5 @@
 import Image from "next/image"
-
+import { ChevronRight } from "lucide-react"
 import Link from "next/link"
 
 interface Release {
@@ -53,21 +53,18 @@ export default function DiscographySection() {
     <div className="bg-black text-white p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Discography</h2>
-        <Link href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
+        <Link href="#" className="flex text-sm text-gray-400 hover:text-white transition-colors">
           Show all
+          <ChevronRight className="ml-2 w-4 h-4" />
         </Link>
       </div>
 
       <div className="flex gap-2 mb-6">
+      
         <button className="py-1 px-4 rounded-full bg-white text-black hover:bg-white/90">
-          Popular releases
-        </button>
-        <button className="py-1 px-4 rounded-full text-white hover:bg-white/10">
           Albums
         </button>
-        <button className=" py-1 px-4 rounded-full text-white hover:bg-white/10">
-          Singles and EPs
-        </button>
+        
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">

@@ -1,54 +1,52 @@
 import Image from "next/image"
-import { ChevronRight } from "lucide-react"
-
-interface Track {
-  number: number
+import { Play, Heart, Plus } from "lucide-react"
+interface Song {
   title: string
+  artists: string[]
   views: number
   duration: string
   explicit?: boolean
   albumArt: string
-  featuring?: string[]
 }
 
-export default function PopularTracks() {
-  const tracks: Track[] = [
+export default function PopularSong() {
+  const songs: Song[] = [
     {
-      number: 1,
-      title: "Track 06",
-      views: 6709979,
-      duration: "2:45",
-      albumArt: "/danhdoi.png",
-    },
-    {
-      number: 2,
-      title: "1000 Ánh Mắt",
-      views: 12912903,
-      duration: "2:32",
-      albumArt: "/danhdoi.png",
-    },
-    {
-      number: 3,
-      title: "Hà Nội",
-      views: 30482129,
-      duration: "2:45",
-      albumArt: "/danhdoi.png",
-    },
-    {
-      number: 4,
-      title: "Đánh Đổi",
-      views: 25854267,
-      duration: "3:46",
+      title: "Simp Gái 808",
+      artists: ["Low G"],
+      views: 31019828,
+      duration: "2:41",
       explicit: true,
       albumArt: "/danhdoi.png",
     },
     {
-      number: 5,
-      title: "Buồn Hay Vui",
-      views: 27702850,
-      duration: "4:51",
+      title: "Mơ",
+      artists: ["Vũ Cát Tường"],
+      views: 26208842,
+      duration: "4:22",
       albumArt: "/danhdoi.png",
-      featuring: ["RPT MCK", "Obito", "Ronboogz", "Boyzed"],
+    },
+    {
+      title: "Don't Côi",
+      artists: ["RPT Orijinn", "Ronboogz"],
+      views: 37702988,
+      duration: "2:28",
+      explicit: true,
+      albumArt: "/danhdoi.png",
+    },
+    {
+      title: "Chịu Cách Mình Nói Thua",
+      artists: ["RHYDER", "CoolKid", "BAN"],
+      views: 41889361,
+      duration: "3:01",
+      albumArt: "/danhdoi.png",
+    },
+    {
+      title: "NGỰA Ô",
+      artists: ["Dangrangto", "TeuYungBoy", "DONAL"],
+      views: 15487312,
+      duration: "3:35",
+      albumArt: "/danhdoi.png",
     },
   ]
 
@@ -59,49 +57,58 @@ export default function PopularTracks() {
   return (
     <div className="bg-[#121212] text-white p-6">
       <div className="mb-6">
-        <p className="text-sm text-gray-400">Popular Tracks by</p>
-        <h2 className="text-3xl font-bold">Obito</h2>
+        <h2 className="text-2xl font-bold mb-1">Popular Song</h2>
+        <p className="text-sm text-gray-400">by Obito</p>
       </div>
-
       <div className="space-y-3">
-        {tracks.map((track) => (
+        {songs.map((song, index) => (
           <div
-            key={track.number}
+            key={index}
             className="flex items-center gap-4 p-2 rounded-md hover:bg-white/10 transition-colors group cursor-pointer"
           >
-            <div className="w-5 text-gray-400 text-sm text-right">{track.number}</div>
-
             <div className="relative w-12 h-12 flex-shrink-0">
-              <Image
-                src={track.albumArt || "/danhdoi.png"}
-                alt={`${track.title} album art`}
-                width={48}
-                height={48}
-                className="rounded object-cover"
-              />
+              <div className="relative w-12 h-12">
+                {/* Ảnh bìa */}
+                <Image
+                  src={song.albumArt || "/placeholder.svg"}
+                  alt={`${song.title} album art`}
+                  width={48}
+                  height={48}
+                  className="rounded object-cover"
+                />
+
+                {/* Nút Play - Ẩn mặc định, hiển thị khi hover */}
+                <button className="absolute inset-0 flex items-center justify-center bg-black/50 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Play size={20} className="text-white" />
+                </button>
+              </div>
+
             </div>
 
             <div className="flex-grow min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-semibold truncate">{track.title}</span>
-                {track.explicit && <span className="bg-gray-600 text-[10px] px-1 rounded">E</span>}
+                <span className="font-semibold truncate">{song.title}</span>
+                {song.explicit && <span className="bg-gray-600 text-[10px] px-1 rounded">E</span>}
               </div>
-              {track.featuring && (
-                <div className="text-sm text-gray-400 truncate">{`(feat. ${track.featuring.join(", ")})`}</div>
-              )}
+              <div className="text-sm text-gray-400 truncate">{song.artists.join(", ")}</div>
             </div>
 
-            <div className="text-sm text-gray-400 mx-4 mr-20">{formatViews(track.views)}</div>
+            <div className="text-sm text-gray-400 mx-4 mr-20">{formatViews(song.views)}</div>
 
-            <div className="text-sm text-gray-400 w-12 text-right">{track.duration}</div>
+            <div className="hidden sm:flex items-center gap-2">
+              <button className="h-8 w-8 text-gray-400 opacity-0 group-hover:opacity-100">
+                <Plus size={16} />
+              </button>
+
+              <div className="text-gray-400 text-sm w-10">{song.duration}</div>
+
+              <button className="h-8 w-8 text-gray-400 opacity-0 group-hover:opacity-100">
+                <Heart size={16} />
+              </button>
+            </div>
           </div>
         ))}
       </div>
-
-      <button className="flex items-center gap-2 text-gray-400 hover:text-white mt-4 text-sm font-medium">
-        See more
-        <ChevronRight className="w-4 h-4" />
-      </button>
     </div>
   )
 }
