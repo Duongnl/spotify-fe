@@ -1,4 +1,4 @@
-import Header from '../../components/track/Header';
+import Header from '../../components/track/Header'
 import MediaControls from '../../components/track/MediaControls'
 import LyricsPage from '../../components/track/Lyrics'
 import PopularSong from '../../components/track/Popular'
