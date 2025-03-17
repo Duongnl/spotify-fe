@@ -14,7 +14,7 @@ export default function FollowingSection() {
     {
       id: "1",
       name: "Shiki",
-      image: "/placeholder.svg?height=200&width=200",
+      image: "/danhdoi.png?height=200&width=200",
       type: "Artist",
     },
   ]

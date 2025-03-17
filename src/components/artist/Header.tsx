@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { CheckCircle } from "lucide-react"
+import { CircleCheck } from "lucide-react"
 
 export default function ArtistProfile() {
   return (
@@ -19,8 +19,14 @@ export default function ArtistProfile() {
       <div className="relative z-10 p-8 flex flex-col justify-end h-full">
         {/* Verified badge */}
         <div className="flex items-center gap-2 mb-4">
-          <CheckCircle className="w-5 h-5 text-blue-400 fill-blue-400" />
-          <span className="text-white text-sm">Verified Artist</span>
+          <Image
+            src="/verify.png"
+            alt="Artist avatar"
+            width={22}
+            height={22}
+            className="object-cover"
+          />
+          <span className="text-white text-lg">Verified Artist</span>
         </div>
 
         {/* Artist name */}

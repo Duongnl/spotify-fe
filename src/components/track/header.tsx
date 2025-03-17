@@ -5,14 +5,14 @@ export default function MusicPlayer() {
     <div className="flex items-center bg-[#1a2a3a] text-white p-4 mt-4 ml-4 rounded-lg">
       <div className="flex flex-col md:flex-row  w-full mx-auto gap-6">
         <div className="relative w-full md:w-80 h-60 shrink-0">
-            <Image
-                src='/danhdoi.png'
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                alt="Album cover"
-                fill
-                className="object-cover rounded-md"
-                priority
-            />
+          <Image
+            src='/danhdoi.png'
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            alt="Album cover"
+            fill
+            className="object-cover rounded-md"
+            priority
+          />
         </div>
 
         <div className="flex flex-col justify-center">
@@ -32,9 +32,10 @@ export default function MusicPlayer() {
             </div>
 
             <div className="flex items-center gap-2 text-gray-300">
-              <span className="font-medium">Obito</span>
+              <a href="/artist" className="font-medium no-underline hover:underline">Obito</a>
               <span className="text-gray-400">•</span>
-              <span>Đánh Đổi</span>
+              <a href="#" className="no-underline hover:underline">Đánh Đổi</a>
+
               <span className="text-gray-400">•</span>
               <span>2023</span>
               <span className="text-gray-400">•</span>

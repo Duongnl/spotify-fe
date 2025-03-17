@@ -1,6 +1,6 @@
 "use client"
 
-import { Play, Plus, MoreHorizontal } from "lucide-react"
+import { Play, Plus, Heart } from "lucide-react"
 
 export default function ArtistControls() {
   return (
@@ -18,12 +18,6 @@ export default function ArtistControls() {
         Follow
       </button>
 
-      <button
-        className="flex items-center justify-center w-10 h-10 bg-transparent text-gray-400 hover:text-white transition-all transform hover:scale-105"
-        aria-label="More options"
-      >
-        <MoreHorizontal className="w-5 h-5" />
-      </button>
     </div>
   )
 }
