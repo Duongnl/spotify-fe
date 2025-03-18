@@ -7,7 +7,7 @@ import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { Row, Col } from "antd";
 import Sidebar from "@/components/shared/sidebar/sidebar";
 import MainLayout from "./main_layout";
-
+import 'rc-slider/assets/index.css';
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",

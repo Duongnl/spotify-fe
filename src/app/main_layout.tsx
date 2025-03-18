@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "@/components/shared/sidebar/sidebar";
 import Header from "@/components/shared/header";
 import { useScreenSize } from "@/utils/resize";
+import PlayBar from "@/components/shared/play_bar";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     const isSmallScreen = useScreenSize("(max-width: 587px)");
@@ -26,12 +27,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 setIsSidebarOpen={setIsSidebarOpen}
             />
 
-            <div className="flex h-[calc(100vh-60px)]">
+            <div className="flex h-[calc(100vh-140px)]">
                 {/* ✅ Tránh nhấp nháy bằng cách không render khi chưa xác định */}
                 {!(isSideBarMobile && !isSidebarOpen) && (
                     <div
                         className={!isSideBarMobile
-                            ? "h-full pl-2 pr-2 pb-2 flex"
+                            ? `h-full pl-2 pr-2 pb-2 flex ${isSidebarOpen && `w-[320px]`} `
                             : "fixed top-[60px] left-0 h-[calc(100vh-60px)] w-[300px] bg-[#1f1f1f] shadow-lg z-50"}
                     >
                         <Sidebar
@@ -45,6 +46,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                 <div className="h-full overflow-auto custom-scrollbar flex-grow">
                     {children}
                 </div>
+            </div>
+            
+            <div className="w-full h-[80px] flex bg-[#1f1f1f]" >
+               <PlayBar/>
             </div>
         </div>
     );
