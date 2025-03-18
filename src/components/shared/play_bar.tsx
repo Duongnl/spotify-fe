@@ -51,8 +51,10 @@ const PlayBar = () => {
                     </div>
 
 
-                    <div className="flex w-full">
-                        <Slider   />
+                    <div className="flex w-[700px] items-center">
+                        <p>1:45</p>
+                        <Slider className="mr-[20px] ml-[20px]" />
+                        <p>3:45</p>
                     </div>
                 </div>
 
@@ -70,6 +72,10 @@ const PlayBar = () => {
                     <button className="text-gray-400 hover:text-white">
                         <Volume2 size={18} />
                     </button>
+                    <div className="mr-[20px] ml-[20px] w-[100px]">
+                     <Slider/>
+                    </div>
+                   
                     {/* <Slider defaultValue={[75]} max={100} step={1} className="w-24" /> */}
                     <button className="text-gray-400 hover:text-white">
                         <Maximize2 size={18} />

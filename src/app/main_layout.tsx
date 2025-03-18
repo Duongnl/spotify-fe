@@ -45,7 +45,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     <div
                         className={
                             !isSideBarMobile
-                                ? `h-full pl-2 pr-2 pb-2 flex ${isSidebarOpen && `w-[320px]`} `
+                                ? `h-full pl-2 pr-2 pb-2 flex`
                                 : "fixed top-[60px] left-0 h-[calc(100vh-60px)] w-[300px] bg-[#1f1f1f] shadow-lg z-50"
                         }
                     >
