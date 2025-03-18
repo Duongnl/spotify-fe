@@ -25,7 +25,7 @@ const Sidebar = (props: IProps) => {
 
     return (
         <>
-            <div className="bg-[#1f1f1f] p-4 rounded-xl h-full flex flex-col">
+            <div className= {`bg-[#1f1f1f] p-4 rounded-xl h-full flex flex-col  ${isSidebarOpen ? 'w-[320px]' : 'w-[96px]'}`}>
                 {/* Thanh tiêu đề */}
                 <div className={`flex justify-between items-center ${!isSidebarOpen && `flex-col`} `} >
                     <div className="flex items-center">
