@@ -4,7 +4,7 @@ import type { MenuProps } from 'antd';
 import { Button, Dropdown, Space } from 'antd';
 import { useState, useEffect } from "react";
 import { GalleryHorizontalEnd, MoveRight, Plus } from "lucide-react"
-
+import { usePathname, useRouter } from "next/navigation";
 interface IProps {
     isSideBarMobile: boolean,
 
@@ -21,7 +21,7 @@ const Header = (props: IProps) => {
     const [isSearchDesktopOpen, setIsSearchDesktopOpen] = useState(false);
     const [isSearchMobileOpen, setIsSearchMobileOpen] = useState(false);
     const [search, setSearch] = useState<string>("")
-
+    const pathname = usePathname();
     const isSmallScreen = useScreenSize("(max-width: 587px)");
 
     useEffect(() => {
@@ -77,7 +77,7 @@ const Header = (props: IProps) => {
                 <div className="flex items-center">
 
                     {
-                        isSideBarMobile && (
+                        isSideBarMobile && pathname != '/account/overview' && (
                             <>
                                 <button className="rounded-full bg-[#1f1f1f] text-[25px] h-full w-[48px] flex justify-center items-center"  
                                 onClick={() => {handleShowSidebarMobile()}}
