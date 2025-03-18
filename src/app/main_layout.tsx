@@ -39,7 +39,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
 
 
-            <div className = {`flex ${( pathname !== "/login" && pathname !== "/signup" ? `h-[calc(100vh-${pathname !== "/account/overview" ? `140px` : `60px`})]` : `h-screen` )} `}>
+            <div className = {`flex ${( pathname !== "/login" && pathname !== "/signup" ? `${pathname !== "/account/overview" ? `h-[calc(100vh-140px)]` : `h-[calc(100vh-60px)]`}` : `h-screen` )} `}>
                 {/* ✅ Tránh nhấp nháy bằng cách không render khi chưa xác định */}
                 {!(isSideBarMobile && !isSidebarOpen) && pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && (
                     <div
