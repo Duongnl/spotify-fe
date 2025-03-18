@@ -1,6 +1,6 @@
 "use client"
 
-import { Play, Plus, MoreHorizontal } from "lucide-react"
+import { Play, Plus, Heart } from "lucide-react"
 
 export default function MediaControls() {
   return (
@@ -23,7 +23,8 @@ export default function MediaControls() {
         className="flex items-center justify-center w-10 h-10 bg-transparent text-gray-400 hover:text-white transition-colors"
         aria-label="More options"
       >
-        <MoreHorizontal className="w-5 h-5" />
+        <Heart className="w-8 h-8"/>
+  
       </button>
     </div>
   )

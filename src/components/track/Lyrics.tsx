@@ -7,7 +7,7 @@ export default function LyricsPage() {
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 p-6 bg-[#121212] text-white min-h-screen">
+    <div className="flex flex-col md:flex-row gap-8 p-6 bg-[#121212] text-white">
       {/* Lyrics Section */}
       <div className="flex-1">
         <h1 className="text-3xl font-bold mb-6">Lyrics</h1>
