@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/shared/sidebar/sidebar";
 import Header from "@/components/shared/header";
+import Footer from "@/components/shared/footer";
 import { useScreenSize } from "@/utils/resize";
 import PlayBar from "@/components/shared/play_bar";
 import { usePathname, useRouter } from "next/navigation";
@@ -26,20 +27,20 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             {
                 pathname !== "/login" && pathname !== "/signup" && (
                     <>
-             
-                            <Header
-                                isSideBarMobile={isSideBarMobile}
-                                isSidebarOpen={isSidebarOpen}
-                                setIsSidebarOpen={setIsSidebarOpen}
-                            />
-               
+
+                        <Header
+                            isSideBarMobile={isSideBarMobile}
+                            isSidebarOpen={isSidebarOpen}
+                            setIsSidebarOpen={setIsSidebarOpen}
+                        />
+
                     </>
                 )
             }
 
 
 
-            <div className = {`flex ${( pathname !== "/login" && pathname !== "/signup" ? `${pathname !== "/account/overview" ? `h-[calc(100vh-140px)]` : `h-[calc(100vh-60px)]`}` : `h-screen` )} `}>
+            <div className={`flex ${(pathname !== "/login" && pathname !== "/signup" ? `${pathname !== "/account/overview" ? `h-[calc(100vh-140px)]` : `h-[calc(100vh-60px)]`}` : `h-screen`)} `}>
                 {/* ✅ Tránh nhấp nháy bằng cách không render khi chưa xác định */}
                 {!(isSideBarMobile && !isSidebarOpen) && pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && (
                     <div
@@ -57,8 +58,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     </div>
                 )}
 
-                <div className="h-full overflow-auto custom-scrollbar flex-grow">
-                    {children}
+                <div className="h-full overflow-auto custom-scrollbar flex flex-col flex-grow">
+                    <div className="flex-grow">
+                        {children}
+                        <Footer/>
+                    </div>
                 </div>
             </div>
 
