@@ -4,7 +4,7 @@ export default function ArtistAbout() {
     return (
         <div className="bg-black text-white p-6">
             <h2 className="text-2xl font-bold">About</h2>
-            <div className="relative h-[500px] max-w-[70%]">
+            <div className="relative h-[500px] max-w-[100%]">
                 {/* Background Image */}
                 <Image src="/obito.png?height=600&width=1200" alt="Artist cover" fill 
                     className="object-cover right-0 w-[80%]"

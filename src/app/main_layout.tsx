@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/shared/sidebar/sidebar";
 import Header from "@/components/shared/header";
+import Footer from "@/components/shared/footer";
 import { useScreenSize } from "@/utils/resize";
 import PlayBar from "@/components/shared/play_bar";
 import { usePathname, useRouter } from "next/navigation";
@@ -80,8 +81,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     </div>
                 )}
 
-                <div className="h-full overflow-auto custom-scrollbar flex-grow">
-                    {children}
+                <div className="h-full overflow-auto custom-scrollbar flex flex-col flex-grow">
+                    <div className="flex-grow">
+                        {children}
+                        <Footer/>
+                    </div>
                 </div>
                 {
                     isQueueBarOpen && (
