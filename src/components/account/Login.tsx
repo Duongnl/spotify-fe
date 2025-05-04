@@ -1,6 +1,8 @@
 "use client"
 import { useState, FormEvent } from 'react';
 import Link from 'next/link';
+import { LoginServerActions } from './login_server_actions';
+import { useRouter } from 'next/navigation';
 
 type FormData = {
   email: string;
@@ -22,7 +24,7 @@ export default function LoginForm() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const router = useRouter()
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
@@ -59,22 +61,32 @@ export default function LoginForm() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
 
-    if (!validateForm()) {
-      return;
-    }
+    // if (!validateForm()) {
+    //   return;
+    // }
 
     setIsSubmitting(true);
-
     try {
       // Giả lập API call đăng nhập
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Xử lý đăng nhập thành công
-      console.log('Đăng nhập thành công:', formData);
+      // console.log('Đăng nhập thành công:', formData);
       // Điều hướng hoặc xử lý đăng nhập ở đây
+      
+        const loginRequest:any = {
+            username: formData.email,
+            password: formData.password
+        }
+        console.log("loginRequest >>>", loginRequest)
+        const res = await LoginServerActions(loginRequest)
+        // login  thanh cong
+        if (res && res.status === 200) {
+
+            router.push("/")
+        }
 
     } catch (error) {
       console.error('Đăng nhập thất bại:', error);
@@ -84,7 +96,7 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <div  className="space-y-6">
       {/* Email Input */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
@@ -144,12 +156,13 @@ export default function LoginForm() {
       <div>
         <button
           type="submit"
-          disabled={isSubmitting}
+          // disabled={isSubmitting}
           className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-4 rounded-full transition duration-200 disabled:opacity-70"
+         onClick={() => {handleSubmit()}}
         >
           {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
       </div>
-    </form>
+    </div>
   );
 }
