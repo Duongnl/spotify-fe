@@ -2,6 +2,7 @@
 import Image from "next/image"
 import { CircleCheck } from "lucide-react"
 
+
 interface ArtistHeaderProps {
   data: any;
 }
