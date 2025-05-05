@@ -1,9 +1,14 @@
+"use client"
 import Image from "next/image"
 import { CircleCheck } from "lucide-react"
 
 
-
-export default function ArtistProfile() {
+interface ArtistHeaderProps {
+  data: any;
+}
+export default function ArtistProfile(props : ArtistHeaderProps) {
+  const { data } = props;
+  console.log("data = ", data);
   return (
     <div className="relative w-full h-[320px] bg-black overflow-hidden">
     {/* Ảnh nghệ sĩ */}
@@ -34,10 +39,10 @@ export default function ArtistProfile() {
       </div>
   
       {/* Tên nghệ sĩ */}
-      <h1 className="text-white text-7xl font-bold mb-4">Obito</h1>
+      <h1 className="text-white text-7xl font-bold mb-4">{data.data.name}</h1>
   
       {/* Monthly listeners */}
-      <p className="text-white text-lg">1,529,381 monthly listeners</p>
+      <p className="text-white text-lg">{data.data.title}</p>
     </div>
   </div>
   

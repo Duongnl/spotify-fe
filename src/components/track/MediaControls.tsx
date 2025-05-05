@@ -1,15 +1,41 @@
-"use client"
+"use client";
+import { useRef, useState } from "react";
+import { Play, Pause, Plus, Heart } from "lucide-react";
 
-import { Play, Plus, Heart } from "lucide-react"
+interface TrackMediaProps {
+  data: any;
+}
 
-export default function MediaControls() {
+export default function MediaControls(props: TrackMediaProps) {
+  const { data } = props;
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleTogglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+
+    setIsPlaying(!isPlaying);
+  };
+
   return (
     <div className="flex items-center gap-4 p-6 bg-[#0e0e0e] w-full">
       <button
+        onClick={handleTogglePlay}
         className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] transition-colors ml-4"
-        aria-label="Play"
+        aria-label={isPlaying ? "Pause" : "Play"}
       >
-        <Play className="w-7 h-7 fill-current" />
+        {isPlaying ? (
+          <Pause className="w-7 h-7 fill-current" />
+        ) : (
+          <Play className="w-7 h-7 fill-current" />
+        )}
       </button>
 
       <button
@@ -23,10 +49,11 @@ export default function MediaControls() {
         className="flex items-center justify-center w-10 h-10 bg-transparent text-gray-400 hover:text-white transition-colors"
         aria-label="More options"
       >
-        <Heart className="w-8 h-8"/>
-  
+        <Heart className="w-8 h-8" />
       </button>
-    </div>
-  )
-}
 
+      {/* Audio Element */}
+      <audio ref={audioRef} src={`https://res.cloudinary.com/moment-images/${data.data.track_file}`} />
+    </div>
+  );
+}
