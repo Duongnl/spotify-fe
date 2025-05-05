@@ -1,6 +1,8 @@
 'use client'
 
-import React from 'react'
+
+import React, { useEffect, useState } from 'react'
+import cookie from "js-cookie"
 
 const mockSongs = [
   {
@@ -48,7 +50,38 @@ const mockArtists = [
   },
 ]
 
-export default function SearchPage() {
+interface Props {
+  search:any;
+}
+
+export default function SearchPage(props:Props) {
+  const {search} = props
+  console.log("search >>> ", search)
+  const[tracks,setTracks]=useState<any>([])
+
+  useEffect (()=>{
+    const fetchAPi = async () => {
+      const res = await fetch(`http://127.0.0.1:8000/tracks/search/${search}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${cookie.get("session-id")}`,
+        },
+      });
+  
+      const data = await res.json();
+      if(data && data.status === 200) {
+        setTracks(data.data)
+        console.log("data >>> ", data.data)
+      }
+    }
+    fetchAPi()
+
+  },[search])
+
+
+
+
+
   return (
     <div className="p-4 text-white">
       <h2 className="text-2xl font-bold mb-6">Kết quả cho: "Tell the kids i love them"</h2>
@@ -75,25 +108,25 @@ export default function SearchPage() {
         <div className="md:w-7/12 h-full">
           <h3 className="text-xl font-semibold mb-2">Bài hát</h3>
           <ul>
-            {mockSongs.map((song, idx) => (
+            {tracks.map((track:any, index:any) => (
               <li
-                key={idx}
+                key={index}
                 className="flex justify-between items-center py-2 border-b border-gray-700"
               >
                 <div className="flex items-center">
                   <img
-                    src={song.thumbnail}
+                    src={track.image_file}
                     className="w-10 h-10 mr-3 rounded"
-                    alt={song.title}
+                    alt={track.title}
                   />
                   <div>
                     <p className="text-base font-medium text-green-400 hover:underline cursor-pointer">
-                      {song.title}
+                      {track.title}
                     </p>
-                    <p className="text-sm text-gray-400">{song.artist}</p>
+                    <p className="text-sm text-gray-400">{track.artist}</p>
                   </div>
                 </div>
-                <span className="text-sm text-gray-400">{song.duration}</span>
+                <span className="text-sm text-gray-400">{track.duration}</span>
               </li>
             ))}
           </ul>

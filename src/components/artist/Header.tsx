@@ -1,6 +1,8 @@
 import Image from "next/image"
 import { CircleCheck } from "lucide-react"
 
+
+
 export default function ArtistProfile() {
   return (
     <div className="relative w-full h-[320px] bg-black overflow-hidden">
