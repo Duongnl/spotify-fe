@@ -11,13 +11,6 @@ export default function ArtistControls() {
       >
         <Play className="w-7 h-7 fill-current" />
       </button>
-
-      <button
-        className="flex items-center justify-center px-5  py-2 bg-transparent border border-gray-200 rounded-3xl text-gray-200  hover:text-white hover:border-gray-100 transition-all transform hover:scale-105"
-      >
-        Follow
-      </button>
-
     </div>
   )
 }
