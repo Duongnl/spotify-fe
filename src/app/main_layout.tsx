@@ -88,7 +88,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     </div>
                 </div>
                 {
-                    isQueueBarOpen && (
+                    isQueueBarOpen && pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && (
                         <>
                             <div className="flex h-full  pr-2 ">
                                 <QueueBar 
