@@ -14,27 +14,27 @@ export default function LoginPage() {
           </h1>
           
           {/* Social login buttons */}
-          <div className="space-y-4 mb-8">
+          {/* <div className="space-y-4 mb-8">
             <button className="w-full flex items-center justify-center gap-3 bg-transparent hover:bg-gray-800 text-white py-3 px-4 rounded-full border border-gray-600 font-medium transition duration-200">
-              {/* <Image src="/api/placeholder/24/24" alt="Google" width={24} height={24} /> */}
+              <Image src="/api/placeholder/24/24" alt="Google" width={24} height={24} />
               <span>Tiếp tục với Google</span>
             </button>
             <button className="w-full flex items-center justify-center gap-3 bg-transparent hover:bg-gray-800 text-white py-3 px-4 rounded-full border border-gray-600 font-medium transition duration-200">
-              {/* <Image src="/api/placeholder/24/24" alt="Facebook" width={24} height={24} /> */}
+              <Image src="/api/placeholder/24/24" alt="Facebook" width={24} height={24} />
               <span>Tiếp tục với Facebook</span>
             </button>
             <button className="w-full flex items-center justify-center gap-3 bg-transparent hover:bg-gray-800 text-white py-3 px-4 rounded-full border border-gray-600 font-medium transition duration-200">
-              {/* <Image src="/api/placeholder/24/24" alt="Apple" width={24} height={24} /> */}
+              <Image src="/api/placeholder/24/24" alt="Apple" width={24} height={24} />
               <span>Tiếp tục với Apple</span>
             </button>
           </div>
           
-          {/* Divider */}
+          Divider
           <div className="flex items-center my-6">
             <div className="flex-1 border-t border-gray-600"></div>
             <span className="px-4 text-gray-300 text-sm">HOẶC</span>
             <div className="flex-1 border-t border-gray-600"></div>
-          </div>
+          </div> */}
           
           {/* Login Form */}
           <LoginForm />
