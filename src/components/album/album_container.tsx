@@ -3,6 +3,8 @@ import Image from 'next/image';
 import SongItem from './song_item';
 import { Play, Plus, Heart } from "lucide-react"
 import RowHomeContent from '../home/RowHomeContent';
+
+
 const AlbumTitle = () => {
 
     return (

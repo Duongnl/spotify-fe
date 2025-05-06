@@ -1,8 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import LoginForm from '../../components/account/Login';
+import { redirect } from 'next/navigation';
+import { getSessionId } from '@/utils/session-store';
+
 
 export default function LoginPage() {
+
+
   return (
     <div className="flex flex-col min-h-screen bg-black">
 
