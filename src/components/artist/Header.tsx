@@ -14,10 +14,10 @@ export default function ArtistProfile(props : ArtistHeaderProps) {
     {/* Ảnh nghệ sĩ */}
     <div className="absolute inset-0">
       <Image
-        src="/obito.png"
+        src={`https://res.cloudinary.com/moment-images/${data.data.image_file}`}
         alt="Artist profile image"
         fill
-        className="object-cover object-center md:object-left"
+        className="object-cover [object-position:center_24%]"
         priority
       />
       {/* Hiệu ứng mờ gradient để dễ đọc chữ hơn */}

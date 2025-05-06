@@ -1,13 +1,21 @@
+"use client"
 import Image from 'next/image';
 
-export default function UserHeader() {
+interface HeaderProps {
+  data: any;
+}
+export default function UserHeader(props: HeaderProps) {
+  const { data } = props;
+  console.log("data: ", data);
+
+  const playlistCount = data.data.playlists?.lenght || 0;
   return (
     <div className="flex items-center bg-[#1a2a3a] text-white p-4 mt-4 ml-2 rounded-lg">
 
       <div className="flex flex-col md:flex-row  w-full mx-auto gap-6 items-center">
         <div className="relative w-60 h-60 shrink-0 flex items-center justify-center">
           <Image
-            src="/danhdoi.png"
+            src={`https://res.cloudinary.com/moment-images/${data.data.imageUrl}`}
             alt="Album cover"
             fill
             className="object-cover rounded-full"
@@ -17,27 +25,15 @@ export default function UserHeader() {
 
 
         <div className="flex flex-col justify-center">
-          <div className="text-sm text-gray-300 mb-2">Profile</div>
+          <div className="text-lg text-gray-300 mb-2">Profile</div>
 
-          <h3 className="text-4xl font-bold tracking-tight mb-6">DuonggNL</h3>
+          <h3 className="text-4xl font-bold tracking-tight mb-6">{data.data.name}</h3>
 
           <div className="flex items-center gap-3">
-            <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-700">
-              <Image
-                src="/danhdoi.png"
-                alt="Artist avatar"
-                width={32}
-                height={32}
-                className="object-cover"
-              />
-            </div>
+            
 
             <div className="flex items-center gap-2 text-gray-300">
-              <span className="font-medium">Obito</span>
-              <span className="text-gray-400">•</span>
-              <span>3 Public Playlists</span>
-              <span className="text-gray-400">•</span>
-              <span>1 Following</span>
+            <span>{playlistCount} Public Playlist{playlistCount !== 1 ? 's' : ''}</span>
             </div>
           </div>
         </div>
