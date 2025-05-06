@@ -41,8 +41,13 @@ export default function LoginForm() {
       ...prevState,
       [name]: value, // Cập nhật giá trị tương ứng với trường trong form
     }));
-    validateForm()
-
+    
+    if (errors[name as keyof FormErrors]) {
+      setErrors({
+        ...errors,
+        [name]: undefined,
+      });
+    }
   };
 
   const handleSubmit = async () => {

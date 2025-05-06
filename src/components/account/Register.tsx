@@ -1,6 +1,8 @@
 "use client"
 import { useState, FormEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
+import API from '@/api/api';
+import { RegisterServerActions } from './register_server_actions';
 
 type FormData = {
   username: string;
@@ -12,6 +14,7 @@ type FormData = {
   gender: string;
   marketing: boolean;
   terms: boolean;
+  name : string;
 };
 
 type FormErrors = {
@@ -21,12 +24,19 @@ type FormErrors = {
   birthday?: string;
   gender?: string;
   terms?: string;
+  name?: string;
 };
+
+
+import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
   const currentYear = new Date().getFullYear();
+
+const router = useRouter();
   
   const [formData, setFormData] = useState<FormData>({
+    name:'',
     username: '',
     email: '',
     password: '',
@@ -40,7 +50,7 @@ export default function RegisterForm() {
   
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [registerSuccess, setRegisterSuccess] = useState(false);
+
 
   const months = [
     'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
@@ -71,6 +81,10 @@ export default function RegisterForm() {
       newErrors.email = 'Vui lòng nhập email của bạn.';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email không hợp lệ. Đảm bảo nó được viết dưới dạng example@email.com';
+    }
+
+    if (!formData.name) {
+      newErrors.name = 'Vui lòng nhập tên của bạn.';
     }
     
     // Password validation
@@ -143,32 +157,65 @@ export default function RegisterForm() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
     
     setIsSubmitting(true);
+    // Xử lý đăng ký thành công
     
-    try {
-      // Giả lập API call đăng ký
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Xử lý đăng ký thành công
-      console.log('Đăng ký thành công:', formData);
-      setRegisterSuccess(true);
-      
-    } catch (error) {
-      console.error('Đăng ký thất bại:', error);
-    } finally {
-      setIsSubmitting(false);
+    const request = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      password_confirm: formData.password,
+      name: formData.name,
+      birthDay: `${formData.year}-${formData.month}-${formData.day}`,
+      gender: formData.gender
     }
+    console.log('Đăng ký thành công:', request);
+    const res:any = await RegisterServerActions(request);
+    console.log("res >>>> ", res)
+    if (res && res.status === 201) {
+      router.push('/');
+    } else {
+      setErrors({
+        email: res.error.email?.[0],
+        username: res.error.username?.[0],
+      });
+    }
+    setIsSubmitting(false);
   };
   
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <div  className="space-y-4">
+
+            {/* Username Input */}
+            <div>
+        <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
+          Tên bạn
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Tên"
+          value={formData.name}
+          onChange={handleChange}
+          className={`w-full bg-gray-900 border ${
+            errors.name ? 'border-red-500' : 'border-gray-600'
+          } rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-green-500`}
+        />
+        {errors.name && (
+          <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+        )}
+        {!errors.name && (
+          <p className="mt-1 text-xs text-gray-400">
+            
+          </p>
+        )}
+      </div>
       {/* Username Input */}
       <div>
         <label htmlFor="username" className="block text-sm font-medium text-white mb-2">
@@ -401,10 +448,11 @@ export default function RegisterForm() {
           type="submit"
           disabled={isSubmitting}
           className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-4 rounded-full transition duration-200 disabled:opacity-70"
+          onClick={() => {handleSubmit()}}
         >
           {isSubmitting ? 'Đang đăng ký...' : 'Đăng ký'}
         </button>
       </div>
-    </form>
+    </div>
   );
 }
