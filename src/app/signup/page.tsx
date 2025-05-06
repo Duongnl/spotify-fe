@@ -33,9 +33,6 @@ export default function SignUpPage() {
           
           {/* Register Form */}
           <div className="mb-4">
-            <h2 className="text-xl font-bold text-white mb-4">
-              Đăng ký bằng email của bạn
-            </h2>
             <RegisterForm />
           </div>
           
