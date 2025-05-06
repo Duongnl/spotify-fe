@@ -20,15 +20,15 @@ export default async function Artits(props: any) {
 
   const data = await res.json();
 
-  console.log("data: ", data);
+  // console.log("data: ", data);
 
   return (
     <>
     <Header data = {data}/>
     <ArtistControls />
-    <PopularList />
-    <Discography/>
-    <ArtistAbout/>
+    <PopularList data = {data} />
+    <Discography data = {data}/>
+    <ArtistAbout data = {data}/>
     </>
   )
 }

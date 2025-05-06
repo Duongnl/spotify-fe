@@ -51,11 +51,6 @@ export default function TrackHeader(props : TrackHeaderProps) {
               </span>
             ))}
 
-
-
-              <span className="text-gray-400">•</span>
-              <a href="#" className="no-underline hover:underline">Album</a>
-
               <span className="text-gray-400">•</span>
               <span>{data.data.releaseDate}</span>
               <span className="text-gray-400">•</span>

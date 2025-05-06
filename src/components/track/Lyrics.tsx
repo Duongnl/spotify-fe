@@ -40,11 +40,12 @@ export default function LyricsPage(props: TrackLyricProps) {
       <div className="md:w-80">
         <div className="space-y-6">
 
-          {data.data.artists.map((item) => (
+          {data.data.artists.map((item, index) => (
             <div className="flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden">
                 <Image
-                  src={item.artist.image_file}
+                  key={index}
+                  src={`https://res.cloudinary.com/moment-images/${item.artist.image_file}`}
                   alt={item.artist.name}
                   width={64}
                   height={64}
