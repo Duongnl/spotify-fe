@@ -1,13 +1,14 @@
-"use client"
-import { useState, FormEvent } from 'react';
-import Link from 'next/link';
-import { LoginServerActions } from './login_server_actions';
+'use client'
+
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { LoginServerActions } from './login_server_actions';
+ // Giả sử bạn có function này
 
 type FormData = {
   email: string;
   password: string;
-  remember: boolean;
+
 };
 
 type FormErrors = {
@@ -19,44 +20,48 @@ export default function LoginForm() {
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
-    remember: false,
   });
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
 
   const [errors, setErrors] = useState<FormErrors>({});
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
+  const validateForm = () => {
+    const newErrors: FormErrors = {};
+    if (!formData.email) newErrors.email = 'Email hoặc tên người dùng là bắt buộc';
+    if (!formData.password) newErrors.password = 'Mật khẩu là bắt buộc';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value, // Cập nhật giá trị tương ứng với trường trong form
+    }));
+    validateForm()
+
+  };
 
   const handleSubmit = async () => {
-
-    // if (!validateForm()) {
-    //   return;
-    // }
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
     try {
-      // Giả lập API call đăng nhập
-      // await new Promise(resolve => setTimeout(resolve, 1000));
+      const loginRequest = {
+        username: formData.email,
+        password: formData.password,
+      };
+      console.log('loginRequest >>>', loginRequest);
+      const res = await LoginServerActions(loginRequest);
 
-      // Xử lý đăng nhập thành công
-      // console.log('Đăng nhập thành công:', formData);
-      // Điều hướng hoặc xử lý đăng nhập ở đây
-      
-        const loginRequest:any = {
-            username: formData.email,
-            password: formData.password
-        }
-        console.log("loginRequest >>>", loginRequest)
-        const res = await LoginServerActions(loginRequest)
-        // login  thanh cong
-        if (res && res.status === 200) {
-
-            router.push("/")
-        }
-
+      if (res && res.status === 200) {
+        router.push('/');
+      } else {
+        setErrors({ email: 'Đăng nhập thất bại, kiểm tra lại thông tin' });
+      }
     } catch (error) {
       console.error('Đăng nhập thất bại:', error);
     } finally {
@@ -65,7 +70,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div  className="space-y-6">
+    <div className="space-y-6">
       {/* Email Input */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
@@ -77,12 +82,11 @@ export default function LoginForm() {
           name="email"
           placeholder="Địa chỉ email hoặc tên người dùng"
           value={formData.email}
+          onChange={handleChange}
           className={`w-full bg-gray-900 border ${errors.email ? 'border-red-500' : 'border-gray-600'
             } rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-green-500`}
         />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-        )}
+        {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
       </div>
 
       {/* Password Input */}
@@ -96,21 +100,22 @@ export default function LoginForm() {
           name="password"
           placeholder="Mật khẩu"
           value={formData.password}
+          onChange={handleChange}
           className={`w-full bg-gray-900 border ${errors.password ? 'border-red-500' : 'border-gray-600'
             } rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-green-500`}
         />
-        {errors.password && (
-          <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-        )}
+        {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
       </div>
+
+
 
       {/* Login Button */}
       <div>
         <button
           type="submit"
-          // disabled={isSubmitting}
+          onClick={handleSubmit}
+          disabled={isSubmitting}
           className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 px-4 rounded-full transition duration-200 disabled:opacity-70"
-         onClick={() => {handleSubmit()}}
         >
           {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </button>
