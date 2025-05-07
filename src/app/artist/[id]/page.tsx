@@ -1,5 +1,4 @@
 import Header from '../../../components/artist/Header'
-import ArtistControls from '../../../components/artist/ArtistControls'
 import PopularList from '../../../components/artist/PopularList'
 import Discography from '../../../components/artist/Discography'
 import ArtistAbout from '../../../components/artist/About'
@@ -25,7 +24,6 @@ export default async function Artits(props: any) {
   return (
     <>
     <Header data = {data}/>
-    <ArtistControls />
     <PopularList data = {data} />
     <Discography data = {data}/>
     <ArtistAbout data = {data}/>
