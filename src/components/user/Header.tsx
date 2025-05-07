@@ -8,7 +8,7 @@ export default function UserHeader(props: HeaderProps) {
   const { data } = props;
   console.log("data: ", data);
 
-  const playlistCount = data.data.playlists?.lenght || 0;
+  const playlistCount = data.data.playlists?.length || 0;
   return (
     <div className="flex items-center bg-[#1a2a3a] text-white p-4 mt-4 ml-2 rounded-lg">
 

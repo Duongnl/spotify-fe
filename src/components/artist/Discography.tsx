@@ -30,7 +30,7 @@ export default function DiscographySection(props: AlbumProps) {
       </div>
   
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {data.data.albums.map((album) => (
+        {data.data.albums.map((album:any) => (
           <div key={album.id} className="group">
             <div className="relative aspect-square mb-4">
               <Image
