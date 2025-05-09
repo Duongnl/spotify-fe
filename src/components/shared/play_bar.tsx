@@ -20,6 +20,7 @@ import {
 import { useScreenSize } from "@/utils/resize";
 import { Plus, Heart } from "lucide-react"
 import { usePlaybarContext } from "@/context/playbar-context";
+import { useRouter } from "next/navigation";
 
 interface IProps {
     isQueueBarOpen: boolean,
@@ -28,7 +29,7 @@ interface IProps {
 }
 
 const PlayBar = (props: IProps) => {
-    const { currentAudioPlaying, setCurrentAudioPlaying, audioRef, isPlaying, setIsPlaying, playMusic, trackFile, artistName, trackName , img} = usePlaybarContext();
+    const { currentAudioPlaying, setCurrentAudioPlaying, audioRef, isPlaying, setIsPlaying, playMusic, artistName, trackName, img } = usePlaybarContext();
     const { isQueueBarOpen, setIsQueueBarOpen } = props
     const [isPlayBarMobile, setIsPlayBarMobile] = useState(false)
     const isSmallScreen = useScreenSize("(max-width: 970px)");
@@ -47,16 +48,24 @@ const PlayBar = (props: IProps) => {
         }
     }
 
+    const router = useRouter()
+
     const handlePlayMusic = () => {
 
-        playMusic(currentAudioPlaying, trackFile)
+        playMusic(currentAudioPlaying)
     }
-    
+
+    const Link = () => {
+        router.push(`/track/${currentAudioPlaying }`)
+    }
+
 
     return (
         <>
             <div className="flex justify-between  p-2 w-full">
-                <div className="flex w-[300px]" >
+                <div className="flex w-[300px] cursor-pointer"
+                    onClick={() => { Link() }}
+                >
                     <Image
                         src={`https://res.cloudinary.com/moment-images/${img}`}
                         alt="Obito"
@@ -75,9 +84,26 @@ const PlayBar = (props: IProps) => {
                         <>
                             <div className="flex  items-center" >
                                 <Heart size={30} />
-                                <button className="bg-white rounded-full p-1 text-black hover:bg-gray-200 ml-[50px]">
-                                    <Play size={30} />
-                                </button>
+
+                                {isPlaying ? (
+                                    <>
+                                        <button className="bg-white rounded-full p-1 text-black hover:bg-gray-200 ml-[50px]"
+                                            onClick={() => { handlePlayMusic() }}
+                                        >
+                                            <Pause size={30} />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button className="bg-white rounded-full p-1 text-black hover:bg-gray-200 ml-[50px]"
+                                            onClick={() => { handlePlayMusic() }}
+                                        >
+                                            <Play size={30} />
+                                        </button>
+                                    </>
+                                )}
+
+
                             </div>
                         </>
                     )
@@ -96,15 +122,15 @@ const PlayBar = (props: IProps) => {
                                     {isPlaying ? (
                                         <>
                                             <button className="bg-white rounded-full p-1 text-black hover:bg-gray-200"
-                                              onClick={ () => {handlePlayMusic()}}>
-                                                <Pause size={30} 
+                                                onClick={() => { handlePlayMusic() }}>
+                                                <Pause size={30}
                                                 />
                                             </button>
                                         </>
                                     ) : (
                                         <>
                                             <button className="bg-white rounded-full p-1 text-black hover:bg-gray-200"
-                                              onClick={ () => {handlePlayMusic()}}>
+                                                onClick={() => { handlePlayMusic() }}>
                                                 <Play size={30} />
                                             </button>
                                         </>

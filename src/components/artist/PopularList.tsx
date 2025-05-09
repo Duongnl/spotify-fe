@@ -2,6 +2,8 @@
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { Play, Heart, Plus, Pause } from "lucide-react"
+import { usePlaybarContext } from "@/context/playbar-context";
+import Link from "next/link";
 
 interface PopularTracksListProps {
   data: any;
@@ -9,59 +11,67 @@ interface PopularTracksListProps {
 
 export default function PopularTracksList(props: PopularTracksListProps) {
   const { data } = props;
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+      const { currentAudioPlaying,isPlaying, playMusic, 
+       } = usePlaybarContext();
+
+  // const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  // const [isPlaying, setIsPlaying] = useState(false);
+  // const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Cleanup audio element when component unmounts
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     if (audioRef.current) {
+  //       audioRef.current.pause();
+  //       audioRef.current = null;
+  //     }
+  //   };
+  // }, []);
 
-  const handlePlayToggle = (trackId: string, trackFile: string) => {
-    // If clicking on the currently playing track
-    if (currentlyPlaying === trackId) {
-      if (isPlaying) {
-        // Pause the current track
-        audioRef.current?.pause();
-        setIsPlaying(false);
-      } else {
-        // Resume the current track
-        audioRef.current?.play();
-        setIsPlaying(true);
-      }
-    } else {
-      // Play a new track
+  // const handlePlayToggle = (trackId: string, trackFile: string) => {
+  //   // If clicking on the currently playing track
+  //   if (currentlyPlaying === trackId) {
+  //     if (isPlaying) {
+  //       // Pause the current track
+  //       audioRef.current?.pause();
+  //       setIsPlaying(false);
+  //     } else {
+  //       // Resume the current track
+  //       audioRef.current?.play();
+  //       setIsPlaying(true);
+  //     }
+  //   } else {
+  //     // Play a new track
       
-      // Stop any currently playing audio
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
+  //     // Stop any currently playing audio
+  //     if (audioRef.current) {
+  //       audioRef.current.pause();
+  //     }
       
-      // Create new audio element
-      const audio = new Audio(`https://res.cloudinary.com/moment-images/${trackFile}`);
-      audioRef.current = audio;
+  //     // Create new audio element
+  //     const audio = new Audio(`https://res.cloudinary.com/moment-images/${trackFile}`);
+  //     audioRef.current = audio;
       
-      // Set up ended event to reset state
-      audio.addEventListener('ended', () => {
-        setIsPlaying(false);
-        setCurrentlyPlaying(null);
-      });
+  //     // Set up ended event to reset state
+  //     audio.addEventListener('ended', () => {
+  //       setIsPlaying(false);
+  //       setCurrentlyPlaying(null);
+  //     });
       
-      // Play the new track
-      audio.play().then(() => {
-        setIsPlaying(true);
-        setCurrentlyPlaying(trackId);
-      }).catch(error => {
-        console.error("Error playing audio:", error);
-      });
+  //     // Play the new track
+  //     audio.play().then(() => {
+  //       setIsPlaying(true);
+  //       setCurrentlyPlaying(trackId);
+  //     }).catch(error => {
+  //       console.error("Error playing audio:", error);
+  //     });
+  //   }
+  // };
+
+    const handlePlayMusic = (e:string) => {
+        playMusic(e)
     }
-  };
 
   console.log("PopularTracksList data: ", data);
 
@@ -71,7 +81,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
   
       <div className="space-y-2">
         {data.data.tracks.map((item:any, index:any) => {
-          const isCurrentTrack = currentlyPlaying === item.track.id;
+          const isCurrentTrack = currentAudioPlaying === item.track.id;
           
           return (
             <div
@@ -85,7 +95,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
                 {/* Hiển thị nút Play khi hover */}
                 <button 
                   className="h-8 w-8 text-white hidden group-hover:flex items-center justify-center"
-                  onClick={() => handlePlayToggle(item.track.id, item.track.track_file)}
+                  onClick={() => handlePlayMusic(item.track.id)}
                 >
                   {isCurrentTrack && isPlaying ? (
                     <Pause size={16} />
@@ -108,14 +118,14 @@ export default function PopularTracksList(props: PopularTracksListProps) {
     
               <div className="ml-3 flex-grow">
                 <div className="flex items-center">
-                  <a href={`/track/${item.track.id}`}
+                  <Link href={`/track/${item.track.id}`}
                   
                     className={`font-medium block truncate max-w-[100px] sm:max-w-none ${
                       isCurrentTrack && isPlaying ? "text-[#00c853]" : ""
                     }`}
                   >
                     {item.track.title}
-                  </a>
+                  </Link>
                 </div>
               </div>
     
@@ -125,7 +135,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
               <div className="hidden sm:flex items-center gap-2">
                 <button 
                   className="h-8 w-8 text-gray-400 opacity-0 group-hover:opacity-100"
-                  onClick={() => handlePlayToggle(item.track.id, item.track.track_file)}
+                  onClick={() => handlePlayMusic(item.track.id)}
                 >
                   
                   

@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { Play, Pause, Plus, Heart } from "lucide-react";
+import { usePlaybarContext } from "@/context/playbar-context";
 
 interface TrackMediaProps {
   data: any;
@@ -8,30 +9,35 @@ interface TrackMediaProps {
 
 export default function MediaControls(props: TrackMediaProps) {
   const { data } = props;
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+      const { currentAudioPlaying,isPlaying, playMusic, 
+       } = usePlaybarContext();
 
-  const handleTogglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
+  // const handleTogglePlay = () => {
+  //   const audio = audioRef.current;
+  //   if (!audio) return;
 
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play();
+  //   if (isPlaying) {
+  //     audio.pause();
+  //   } else {
+  //     audio.play();
+  //   }
+  // };
+
+
+    const handlePlayMusic = () => {
+        playMusic(data.data.id)
     }
-
-    setIsPlaying(!isPlaying);
-  };
 
   return (
     <div className="flex items-center gap-4 p-6 bg-[#0e0e0e] w-full">
       <button
-        onClick={handleTogglePlay}
+        onClick={() => {handlePlayMusic()}}
         className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] transition-colors ml-4"
         aria-label={isPlaying ? "Pause" : "Play"}
       >
-        {isPlaying ? (
+        { (isPlaying && currentAudioPlaying === data.data.id)  ? (
           <Pause className="w-7 h-7 fill-current" />
         ) : (
           <Play className="w-7 h-7 fill-current" />
@@ -53,7 +59,7 @@ export default function MediaControls(props: TrackMediaProps) {
       </button>
 
       {/* Audio Element */}
-      <audio ref={audioRef} src={`https://res.cloudinary.com/moment-images/${data.data.track_file}`} />
+      {/* <audio ref={audioRef} src={`https://res.cloudinary.com/moment-images/${data.data.track_file}`} /> */}
     </div>
   );
 }

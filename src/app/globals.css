@@ -86,3 +86,22 @@ body {
 
 
 /* 588 */
+
+
+.scroll-on-hover {
+  overflow-x: hidden;
+  -ms-overflow-style: none;  /* IE và Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scroll-on-hover:hover {
+  overflow-x: auto;
+}
+
+.scroll-on-hover::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll-on-hover:not(:hover)::-webkit-scrollbar {
+  display: none;
+}

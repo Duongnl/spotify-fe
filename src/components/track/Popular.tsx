@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { Play, Heart, Plus } from "lucide-react"
+import Link from "next/link";
 interface Track {
   id: string;
   title: string;
@@ -65,8 +66,8 @@ export default function PopularSong({ tracks, currentArtist }: PopularProps) {
 
               <div className="flex-grow min-w-0">
                 <div className="flex items-center gap-2">
-                  <a href={`/track/${track.id}`}
-                  className="font-semibold truncate">{track.title}</a>
+                  <Link href={`/track/${track.id}`}
+                  className="font-semibold truncate">{track.title}</Link>
                 </div>
                 <div className="text-sm text-gray-400 truncate">
                   {track.artistName}
