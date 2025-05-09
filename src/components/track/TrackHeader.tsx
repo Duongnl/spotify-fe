@@ -1,6 +1,7 @@
 "use client"
 import Image from 'next/image';
 import { formatDuration } from '@/utils/format';
+import Link from 'next/link';
 
 interface TrackHeaderProps {
   data: any;
@@ -44,12 +45,12 @@ export default function TrackHeader(props : TrackHeaderProps) {
               .filter(item => item.owner === true)
                 .map((item, index, array) => (
                   <span key={index}>
-                  <a 
+                  <Link 
                   href={`/artist/${item.artist.id}`} // Thay # bằng đường dẫn thực tế
 
                   className="no-underline hover:underline">
                       {item.artist.name}
-                  </a>
+                  </Link>
                 {index < array.length - 1 && ' - '}
               </span>
             ))}

@@ -3,18 +3,38 @@ import Image from 'next/image';
 import SongItem from './song_item';
 import { Play, Plus, Heart } from "lucide-react"
 import RowHomeContent from '../home/RowHomeContent';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 interface Props {
     res: any
+    resAlbum: any
 }
 
 
 const AlbumTitle = (props: Props) => {
-    const { res } = props
+    const { res, resAlbum } = props
     const [currentAudioPlaying, setCurrentAudioPlaying] = useState<string>("")
-    
+    console.log("resalbum>>>", resAlbum)
+
+    const [rowHomeResponse, setRowHomeResponse] = useState<RowHomeResponse[]>([])
+    useEffect(() => {
+        let arr:RowHomeResponse[] = [] 
+        for (let i = 0; i < resAlbum.data.length; i++) {
+           const item:RowHomeResponse = {
+            link:'/album/',
+            id: resAlbum.data[i].id,
+            img: resAlbum.data[i].imageUrl,
+            title1: resAlbum.data[i].title,
+            title2: resAlbum.data[i].artist.name
+           } 
+            arr.push(item)
+        }
+        setRowHomeResponse(arr)
+
+
+    }, [])
+
 
     return (
         <>
@@ -48,7 +68,7 @@ const AlbumTitle = (props: Props) => {
                             </div>
 
                             <div className="flex items-center gap-2 text-gray-300">
-                                <Link href={`http://localhost:3000/artist/${res.data.artist.id}`} className="font-medium no-underline hover:underline">{res.data.artist.name}</Link>
+                                <Link href={`/artist/${res.data.artist.id}`} className="font-medium no-underline hover:underline">{res.data.artist.name}</Link>
                                 <span className="text-gray-400">•</span>
                                 <span className="no-underline hover:underline">{res.data.title}</span>
 
@@ -81,18 +101,21 @@ const AlbumTitle = (props: Props) => {
             <div className="bg-black text-white p-6">
                 <h2 className="text-2xl font-bold mb-4">Popular</h2>
 
-                {res.data.tracks?.map((track:any, index:any) => (
-                  
-                        <SongItem
-                            track={track}
-                            name = {res.data.artist.name}
-                        />
+                {res.data.tracks?.map((track: any, index: any) => (
+
+                    <SongItem
+                        track={track}
+                        name={res.data.artist.name}
+                    />
                 ))}
 
                 <div className="space-y-2">
                 </div>
             </div>
-            <RowHomeContent />
+            <RowHomeContent
+                rowHomeResponse={rowHomeResponse}
+                name='Album được đề xuất với bạn'
+            />
 
         </>
     )

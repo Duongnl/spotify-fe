@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Play, Heart, Plus, Pause } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { usePlaybarContext } from "@/context/playbar-context"
+import Link from "next/link"
 interface Props {
     track: any
     name :string
@@ -11,54 +12,10 @@ interface Props {
 const SongItem = (props: Props) => {
     const { track, name } = props
 
-    // const audioRef = useRef<any>(null);
-    // const [isPlaying, setIsPlaying] = useState(false);
-
     const { currentAudioPlaying, setCurrentAudioPlaying, audioRef, isPlaying, setIsPlaying, playMusic, 
-        // setTrackFile, 
-        // setTrackName, 
-        // setArtistName, 
-        // setImg 
     } = usePlaybarContext();
         
 
-    // useEffect(() => {
-    //     // Nếu bài này không phải là bài đang phát, thì pause
-    //     if (currentAudioPlaying !== track.track.id && isPlaying) {
-    //       audioRef.current?.pause();
-    //       audioRef.current = null;
-    //       setIsPlaying(false);
-    //     }
-    //   }, [currentAudioPlaying]);
-      
-    //   const handlePlayMusic = () => {
-    //     if (currentAudioPlaying !== track.track.id) {
-    //       // Phát bài mới
-    //       setCurrentAudioPlaying(track.track.id);
-      
-    //       const audio = new Audio(`https://res.cloudinary.com/moment-images/${track.track.track_file}`);
-    //       audioRef.current = audio;
-      
-    //       audio.play()
-    //         .then(() => setIsPlaying(true))
-    //         .catch(error => console.error("Error playing audio:", error));
-      
-    //       audio.addEventListener("ended", () => {
-    //         setIsPlaying(false);
-    //         audioRef.current = null;
-    //         setCurrentAudioPlaying("");
-    //       });
-    //     } else {
-    //       // Tạm dừng hoặc tiếp tục bài hiện tại
-    //       if (isPlaying) {
-    //         audioRef.current?.pause();
-    //         setIsPlaying(false);
-    //       } else {
-    //         audioRef.current?.play()
-    //           .then(() => setIsPlaying(true))
-    //       }
-    //     }
-    //   };
 
     const handlePlayMusic = () => {
         playMusic(track.track.id)
@@ -77,7 +34,7 @@ const SongItem = (props: Props) => {
                     {/* Hiển thị nút Play khi hover */}
                     {(isPlaying && currentAudioPlaying=== track.track.id) ? (
                         <>
-                            <button className="h-8 w-8 text-white hidden group-hover:flex items-center justify-center"
+                            <button className="h-8 w-8 hidden group-hover:flex items-center justify-center text-[#00c853]"
                                 onClick={() => handlePlayMusic()}
                             >
                                 <Pause size={16} className="ml-0.5" />
@@ -107,10 +64,9 @@ const SongItem = (props: Props) => {
 
                 <div className="ml-3 flex-grow">
                     <div className="flex items-center">
-                        <span className="font-medium block truncate max-w-[100px] sm:max-w-none">
+                        <Link href={`/track/${track.track.id}`} className={`font-medium block truncate max-w-[100px] sm:max-w-none ${(isPlaying && currentAudioPlaying=== track.track.id) && `text-[#00c853]`}`}>
                             {track.track.title}
-                        </span>
-
+                        </Link>
                         {/* {track.explicit && <span className="ml-2 px-1 text-xs bg-gray-600 text-white rounded">E</span>} */}
                     </div>
                 </div>

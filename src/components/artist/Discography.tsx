@@ -1,6 +1,8 @@
+"use client"
 import Image from "next/image"
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation";
 
 
 interface AlbumProps {
@@ -9,7 +11,13 @@ interface AlbumProps {
 
 export default function DiscographySection(props: AlbumProps) {
 
+  const router = useRouter()
+
   const {data} = props;
+
+  const link = (e:string) => {
+    router.push(`/album/${e}`)
+  }
 
   console.log("data album = ", data);
 
@@ -31,7 +39,9 @@ export default function DiscographySection(props: AlbumProps) {
   
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {data.data.albums.map((album:any) => (
-          <div key={album.id} className="group">
+          <div key={album.id} className="group cursor-pointer"
+          onClick={() =>{link(album.id)}}
+          >
             <div className="relative aspect-square mb-4">
               <Image
                 src={`https://res.cloudinary.com/moment-images/${album.imageUrl}`}

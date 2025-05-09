@@ -16,12 +16,23 @@ const AlbumPage = async (props: any) => {
     
       const data = await res.json();
     
-      console.log("data: ", data);
+       const resAlbum = await fetch(API.ALBUM.GET_ALBUMS, {
+        method: "GET", // Đúng phương thức POST
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json", // Đặt Content-Type là JSON
+          Authorization: `Bearer ${getSessionId()}`, // Set Authorization header
+        },
+      });
+    
+      const dataAlbum = await resAlbum.json();
+
 
     return (
         <>
             <AlbumTitle 
             res = {data}
+            resAlbum = {dataAlbum}
             />
         </>
     )
