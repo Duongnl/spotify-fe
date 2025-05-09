@@ -1,7 +1,9 @@
 "use client"
 import API from '@/api/api';
-import { createContext, useContext, useState, ReactNode, useRef } from 'react';
+import { createContext, useContext, useState, ReactNode, useRef, useEffect } from 'react';
 import cookie from "js-cookie"
+import { useUserContext } from './user-context';
+
 type PlaybarContextType = {
   currentAudioPlaying: string
   setCurrentAudioPlaying: (v: string) => void
@@ -17,11 +19,22 @@ type PlaybarContextType = {
   artistName: string
   setImg: (v: string) => void
   img: string
+  currentTime: number
+  setCurrentTime: (v: number) => void
+  duration: number,
+  setDuration: (v: number) => void
+  setIdPlaybar: (v: any) => void
+  idPlaybar: any
+
 };
 
 const PlaybarContext = createContext<PlaybarContextType | undefined>(undefined);
 
 export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
+
+  const { setUser, fetchGetUser, user } = useUserContext();
+
+  // Nếu user chưa được fetch xong → chưa render
 
 
   const [currentAudioPlaying, setCurrentAudioPlaying] = useState<string>("");
@@ -31,68 +44,119 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
   const [artistName, setArtistName] = useState<any>("");
   const [trackName, setTrackName] = useState<any>("");
   const [img, setImg] = useState<any>("");
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const [idPlaybar, setIdPlaybar] = useState<any>("");
+
+
+  useEffect(() => {
+    if (user?.playbar?.track) {
+      setCurrentAudioPlaying(user.playbar.track.id);
+      setTrackName(user.playbar.track.title);
+      setArtistName(user.playbar.track.title); // hoặc dữ liệu khác tùy bạn
+      setImg(user.playbar.track.image_file);
+      setDuration(user.playbar.track.duration)
+      setIdPlaybar(user.playbar.id)
+      setCurrentTime(user.playbar.currentTime)
+    }
+  }, [user])
 
 
   const playMusic = async (trackId: string) => {
+    if (currentAudioPlaying && currentAudioPlaying !== trackId && audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+      setIsPlaying(false);
+    }
 
-
-
-    // Nếu đang phát bài khác → dừng lại và phát bài mới
-    if (currentAudioPlaying !== trackId) {
-
-      // Dừng nhạc hiện tại
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-
+    if (!audioRef.current || currentAudioPlaying !== trackId) {
       const res = await fetch(API.TRACK.GET_TRACK(trackId), {
-        method: "GET", // Đúng phương thức POST
+        method: "GET",
         headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json", // Đặt Content-Type là JSON
-          Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${cookie.get("session-id")}`,
         },
       });
+
       const data = await res.json();
       if (data && data.status === 200) {
+        
 
+       
+      
         const audio = new Audio(`https://res.cloudinary.com/moment-images/${data.data.track_file}`);
         audioRef.current = audio;
+       
+
+        if (trackId != currentAudioPlaying){
+            audio.currentTime = 0;
+            await fetchSaveCurrentTime(data.data.id, 0); // Lưu thời gian vào DB
+        } else {
+          audio.currentTime = currentTime
+        }
+
+        // Gán sự kiện khi metadata đã load để lấy duration
+        audio.addEventListener("loadedmetadata", () => {
+          setDuration(audio.duration);
+        });
+
+        // Gán sự kiện timeupdate để cập nhật currentTime
+        audio.addEventListener("timeupdate", () => {
+          setCurrentTime(audio.currentTime);
+        });
+
+        // Khi kết thúc
+        audio.addEventListener("ended", async () => {
+          await fetchSaveCurrentTime(currentAudioPlaying, currentTime)
+          setIsPlaying(false);
+          audioRef.current = null;
+        });
+
+      
 
         audio.play()
           .then(() => setIsPlaying(true))
           .catch((error) => console.error("Error playing audio:", error));
 
-        audio.addEventListener("ended", () => {
-          setIsPlaying(false);
-          audioRef.current = null;
-          setCurrentAudioPlaying("");
-        });
-
         setCurrentAudioPlaying(trackId);
 
-        let name = data.data.artists.map((artist: any) => artist.artist.name).join(", ");
+        const name = data.data.artists.map((artist: any) => artist.artist.name).join(", ");
         setArtistName(name);
-
-        setTrackName(data.data.title)
-        setImg(data.data.image_file)
-
+        setTrackName(data.data.title);
+        setImg(data.data.image_file);
       }
-
-
-
     } else {
-      // Nếu đang phát cùng bài đó → toggle play/pause
       if (isPlaying) {
+        await fetchSaveCurrentTime(currentAudioPlaying, currentTime)
         audioRef.current?.pause();
         setIsPlaying(false);
       } else {
         audioRef.current?.play()
-          .then(() => setIsPlaying(true))
+          .then(() => setIsPlaying(true));
       }
     }
   };
+
+  const fetchSaveCurrentTime = async (id:any, currTime:any) => {
+
+    const dataRes = {
+      track_id:id,
+      currentTime: Math.floor(currTime),
+      is_repeat:true
+    }
+
+    const res = await fetch(`${API.PLAYBAR.UPDATE}${idPlaybar}/`, {
+      method: "PUT", // Đúng phương thức PUT
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json", // Đặt Content-Type là JSON
+        Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+      },
+      body: JSON.stringify(dataRes), // Gửi dữ liệu JSON
+    });
+    const data = await res.json();
+  }
 
 
 
@@ -115,7 +179,14 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
       setArtistName,
       artistName,
       img,
-      setImg
+      setImg,
+      currentTime,
+      setCurrentTime,
+      duration,
+      setDuration,
+      setIdPlaybar,
+      idPlaybar
+
     }}>
       {children}
     </PlaybarContext.Provider>
