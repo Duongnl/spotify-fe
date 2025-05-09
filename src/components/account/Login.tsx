@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoginServerActions } from './login_server_actions';
+import { useUserContext } from '@/context/user-context';
  // Giả sử bạn có function này
 
 type FormData = {
@@ -21,7 +22,7 @@ export default function LoginForm() {
     email: '',
     password: '',
   });
-
+  const { setUser, fetchGetUser } = useUserContext();
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -64,6 +65,7 @@ export default function LoginForm() {
 
       if (res && res.status === 200) {
         router.push('/');
+        await fetchGetUser()
       } else {
         setErrors({ email: 'Đăng nhập thất bại, kiểm tra lại thông tin' });
       }

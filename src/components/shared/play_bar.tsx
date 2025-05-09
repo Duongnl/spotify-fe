@@ -21,6 +21,7 @@ import { useScreenSize } from "@/utils/resize";
 import { Plus, Heart } from "lucide-react"
 import { usePlaybarContext } from "@/context/playbar-context";
 import { useRouter } from "next/navigation";
+import cookie from "js-cookie"
 
 interface IProps {
     isQueueBarOpen: boolean,
@@ -29,10 +30,18 @@ interface IProps {
 }
 
 const PlayBar = (props: IProps) => {
-    const { currentAudioPlaying, setCurrentAudioPlaying, audioRef, isPlaying, setIsPlaying, playMusic, artistName, trackName, img } = usePlaybarContext();
+    const { currentAudioPlaying, isPlaying, playMusic, artistName, trackName, img, currentTime, duration, audioRef, setCurrentTime, idPlaybar } = usePlaybarContext();
+
+    const handlePlayMusic = async () => {
+
+
+
+        playMusic(currentAudioPlaying)
+    }
     const { isQueueBarOpen, setIsQueueBarOpen } = props
     const [isPlayBarMobile, setIsPlayBarMobile] = useState(false)
     const isSmallScreen = useScreenSize("(max-width: 970px)");
+
     useEffect(() => {
         if (isSmallScreen) {
             setIsQueueBarOpen(false)
@@ -50,15 +59,37 @@ const PlayBar = (props: IProps) => {
 
     const router = useRouter()
 
-    const handlePlayMusic = () => {
 
-        playMusic(currentAudioPlaying)
-    }
+    const formatTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
+
+
+    // const handleSeek = (value: number[]) => {
+    //     const newTime = value[0];
+    //     if (audioRef.current) {
+    //         audioRef.current.currentTime = newTime;
+    //     }
+    // };
+
 
     const Link = () => {
-        router.push(`/track/${currentAudioPlaying }`)
+        router.push(`/track/${currentAudioPlaying}`)
     }
 
+    const [volume, setVolume] = useState(100); // 100%
+    // Khi thay đổi slider
+    const handleVolumeChange = (value: number | number[]) => {
+        const newVolume = Array.isArray(value) ? value[0] : value;
+        setVolume(newVolume);
+
+        if (audioRef.current) {
+            audioRef.current.volume = newVolume / 100; // Giá trị volume trong Audio là từ 0 → 1
+        }
+    };
 
     return (
         <>
@@ -142,11 +173,33 @@ const PlayBar = (props: IProps) => {
                                 </div>
 
 
-                                <div className="flex items-center w-full">
+                                {/* <div className="flex items-center w-full">
                                     <p>1:45</p>
                                     <Slider className="mr-[20px] ml-[20px]" />
                                     <p>3:45</p>
+                                </div> */}
+                                <div className="flex items-center w-full">
+                                    <p className="text-sm">{formatTime(currentTime)}</p>
+                                    <Slider
+                                        className="mx-[20px] w-full"
+                                        value={currentTime}
+                                        max={duration}
+                                        step={1}
+                                        onChange={(value) => {
+                                            if (typeof value === 'number') {
+                                                setCurrentTime(value);
+                                            }
+                                        }}
+                                        onAfterChange={(value) => {
+                                            if (typeof value === 'number' && audioRef.current) {
+                                                audioRef.current.currentTime = value;
+                                            }
+                                        }}
+                                    />
+
+                                    <p className="text-sm">{formatTime(duration)}</p>
                                 </div>
+
                             </div>
 
                             <div className="flex items-center space-x-3 w-[300px] justify-end ">
@@ -166,7 +219,12 @@ const PlayBar = (props: IProps) => {
                                     <Volume2 size={18} />
                                 </button>
                                 <div className="mr-[20px] ml-[20px] w-[100px]">
-                                    <Slider />
+                                    <Slider
+                                        min={0}
+                                        max={100}
+                                        value={volume}
+                                        onChange={handleVolumeChange}
+                                    />
                                 </div>
 
                                 {/* <Slider defaultValue={[75]} max={100} step={1} className="w-24" /> */}
@@ -184,7 +242,22 @@ const PlayBar = (props: IProps) => {
                 isPlayBarMobile && (
                     <>
                         <div className="w-full pl-[20px] pr-[10px]" >
-                            <Slider />
+                            <Slider
+                                className="mx-[20px] w-full"
+                                value={currentTime}
+                                max={duration}
+                                step={1}
+                                onChange={(value) => {
+                                    if (typeof value === 'number') {
+                                        setCurrentTime(value);
+                                    }
+                                }}
+                                onAfterChange={(value) => {
+                                    if (typeof value === 'number' && audioRef.current) {
+                                        audioRef.current.currentTime = value;
+                                    }
+                                }}
+                            />
                         </div>
                     </>
                 )
