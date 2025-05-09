@@ -10,6 +10,7 @@ import MainLayout from "./main_layout";
 import 'rc-slider/assets/index.css';
 import { PlaybarProvider } from "@/context/playbar-context";
 import { UserProvider } from "@/context/user-context";
+import { SidebarProvider } from "@/context/sidebar-context";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -44,7 +45,9 @@ export default function RootLayout({
           <AntdRegistry>
             <UserProvider>
               <PlaybarProvider>
-                <MainLayout>{children}</MainLayout>
+                <SidebarProvider>
+                  <MainLayout>{children}</MainLayout>
+                </SidebarProvider>
               </PlaybarProvider>
             </UserProvider>
           </AntdRegistry>
