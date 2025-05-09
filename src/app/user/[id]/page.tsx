@@ -19,7 +19,7 @@ export default async function User(props: any) {
   return (
     <>
     <Header data = {data}/>
-    <MyPlatList/>
+    <MyPlatList data = {data}/>
     </>
   )
 }

@@ -70,7 +70,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
       <h2 className="text-2xl font-bold mb-4">Popular</h2>
   
       <div className="space-y-2">
-        {data.data.tracks.map((item, index) => {
+        {data.data.tracks.map((item:any, index:any) => {
           const isCurrentTrack = currentlyPlaying === item.track.id;
           
           return (
@@ -108,13 +108,14 @@ export default function PopularTracksList(props: PopularTracksListProps) {
     
               <div className="ml-3 flex-grow">
                 <div className="flex items-center">
-                  <span 
+                  <a href={`/track/${item.track.id}`}
+                  
                     className={`font-medium block truncate max-w-[100px] sm:max-w-none ${
                       isCurrentTrack && isPlaying ? "text-[#00c853]" : ""
                     }`}
                   >
                     {item.track.title}
-                  </span>
+                  </a>
                 </div>
               </div>
     

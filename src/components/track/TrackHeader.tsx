@@ -31,7 +31,7 @@ export default function TrackHeader(props : TrackHeaderProps) {
           <div className="flex items-center gap-3">
             <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-700">
               <Image
-                src="/danhdoi.png"
+                src={`https://res.cloudinary.com/moment-images/${data.data.image_file}`}
                 alt="Artist avatar"
                 width={32}
                 height={32}
@@ -44,7 +44,10 @@ export default function TrackHeader(props : TrackHeaderProps) {
               .filter(item => item.owner === true)
                 .map((item, index, array) => (
                   <span key={index}>
-                  <a href="#" className="no-underline hover:underline">
+                  <a 
+                  href={`/artist/${item.artist.id}`} // Thay # bằng đường dẫn thực tế
+
+                  className="no-underline hover:underline">
                       {item.artist.name}
                   </a>
                 {index < array.length - 1 && ' - '}
