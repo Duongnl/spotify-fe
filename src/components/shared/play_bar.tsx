@@ -19,15 +19,16 @@ import {
 } from "lucide-react"
 import { useScreenSize } from "@/utils/resize";
 import { Plus, Heart } from "lucide-react"
+import { usePlaybarContext } from "@/context/playbar-context";
 
 interface IProps {
     isQueueBarOpen: boolean,
     setIsQueueBarOpen: (v: boolean) => void
-    
+
 }
 
 const PlayBar = (props: IProps) => {
-
+    const { currentAudioPlaying, setCurrentAudioPlaying, audioRef, isPlaying, setIsPlaying, playMusic, trackFile, artistName, trackName , img} = usePlaybarContext();
     const { isQueueBarOpen, setIsQueueBarOpen } = props
     const [isPlayBarMobile, setIsPlayBarMobile] = useState(false)
     const isSmallScreen = useScreenSize("(max-width: 970px)");
@@ -39,27 +40,33 @@ const PlayBar = (props: IProps) => {
     }, [isSmallScreen]);
 
     const handleQueueBar = () => {
-        if (isQueueBarOpen) {   
+        if (isQueueBarOpen) {
             setIsQueueBarOpen(false)
         } else {
             setIsQueueBarOpen(true)
-        }      
+        }
     }
+
+    const handlePlayMusic = () => {
+
+        playMusic(currentAudioPlaying, trackFile)
+    }
+    
 
     return (
         <>
             <div className="flex justify-between  p-2 w-full">
                 <div className="flex w-[300px]" >
                     <Image
-                        src="/danhdoi.png"
+                        src={`https://res.cloudinary.com/moment-images/${img}`}
                         alt="Obito"
                         width={64}
                         height={64}
                         className="object-cover mr-[15px] ml-[15px]"
                     />
                     <div className="flex flex-col justify-around" >
-                        <p className=" font-bold" >Đánh đổi</p>
-                        <p className=" text-[14px]" > Obito</p>
+                        <p className=" font-bold" >{trackName}</p>
+                        <p className=" text-[14px]" > {artistName}</p>
                     </div>
                 </div>
 
@@ -86,9 +93,23 @@ const PlayBar = (props: IProps) => {
                                     <button className="text-gray-400 hover:text-white">
                                         <SkipBack size={20} />
                                     </button>
-                                    <button className="bg-white rounded-full p-1 text-black hover:bg-gray-200">
-                                        <Play size={30} />
-                                    </button>
+                                    {isPlaying ? (
+                                        <>
+                                            <button className="bg-white rounded-full p-1 text-black hover:bg-gray-200"
+                                              onClick={ () => {handlePlayMusic()}}>
+                                                <Pause size={30} 
+                                                />
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button className="bg-white rounded-full p-1 text-black hover:bg-gray-200"
+                                              onClick={ () => {handlePlayMusic()}}>
+                                                <Play size={30} />
+                                            </button>
+                                        </>
+                                    )}
+
                                     <button className="text-gray-400 hover:text-white">
                                         <SkipForward size={20} />
                                     </button>
@@ -105,8 +126,8 @@ const PlayBar = (props: IProps) => {
                             <div className="flex items-center space-x-3 w-[300px] justify-end ">
 
                                 <button className="text-gray-400 hover:text-white">
-                                    <Layers size={18} 
-                                    onClick={() => {handleQueueBar()}}
+                                    <Layers size={18}
+                                        onClick={() => { handleQueueBar() }}
                                     />
                                 </button>
                                 <button className="text-gray-400 hover:text-white">

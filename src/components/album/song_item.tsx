@@ -1,7 +1,68 @@
 "use client"
 import Image from "next/image"
-import { Play, Heart, Plus } from "lucide-react"
-const SongItem = () => {
+import { Play, Heart, Plus, Pause } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import { usePlaybarContext } from "@/context/playbar-context"
+interface Props {
+    track: any
+    name :string
+}
+
+const SongItem = (props: Props) => {
+    const { track, name } = props
+
+    // const audioRef = useRef<any>(null);
+    // const [isPlaying, setIsPlaying] = useState(false);
+
+    const { currentAudioPlaying, setCurrentAudioPlaying, audioRef, isPlaying, setIsPlaying, playMusic, 
+        // setTrackFile, 
+        // setTrackName, 
+        // setArtistName, 
+        // setImg 
+    } = usePlaybarContext();
+        
+
+    // useEffect(() => {
+    //     // Nếu bài này không phải là bài đang phát, thì pause
+    //     if (currentAudioPlaying !== track.track.id && isPlaying) {
+    //       audioRef.current?.pause();
+    //       audioRef.current = null;
+    //       setIsPlaying(false);
+    //     }
+    //   }, [currentAudioPlaying]);
+      
+    //   const handlePlayMusic = () => {
+    //     if (currentAudioPlaying !== track.track.id) {
+    //       // Phát bài mới
+    //       setCurrentAudioPlaying(track.track.id);
+      
+    //       const audio = new Audio(`https://res.cloudinary.com/moment-images/${track.track.track_file}`);
+    //       audioRef.current = audio;
+      
+    //       audio.play()
+    //         .then(() => setIsPlaying(true))
+    //         .catch(error => console.error("Error playing audio:", error));
+      
+    //       audio.addEventListener("ended", () => {
+    //         setIsPlaying(false);
+    //         audioRef.current = null;
+    //         setCurrentAudioPlaying("");
+    //       });
+    //     } else {
+    //       // Tạm dừng hoặc tiếp tục bài hiện tại
+    //       if (isPlaying) {
+    //         audioRef.current?.pause();
+    //         setIsPlaying(false);
+    //       } else {
+    //         audioRef.current?.play()
+    //           .then(() => setIsPlaying(true))
+    //       }
+    //     }
+    //   };
+
+    const handlePlayMusic = () => {
+        playMusic(track.track.id)
+    }
 
     return (
         <>
@@ -11,17 +72,32 @@ const SongItem = () => {
             >
                 <div className="w-8 text-center text-gray-400 group-hover:text-white">
                     {/* Hiển thị ID mặc định, ẩn khi hover */}
-                    <span className="group-hover:hidden">{"1"}</span>
+                    <span className="group-hover:hidden">{track.trackNumber}</span>
 
                     {/* Hiển thị nút Play khi hover */}
-                    <button className="h-8 w-8 text-white hidden group-hover:flex items-center justify-center">
-                        <Play size={16} className="ml-0.5" />
-                    </button>
+                    {(isPlaying && currentAudioPlaying=== track.track.id) ? (
+                        <>
+                            <button className="h-8 w-8 text-white hidden group-hover:flex items-center justify-center"
+                                onClick={() => handlePlayMusic()}
+                            >
+                                <Pause size={16} className="ml-0.5" />
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                             <button className="h-8 w-8 text-white hidden group-hover:flex items-center justify-center"
+                                onClick={() => handlePlayMusic()}
+                            >
+                                <Play size={16} className="ml-0.5" />
+                            </button>
+                        </>
+                    )}
+
                 </div>
 
                 <div className="flex items-center ml-2">
                     <Image
-                        src={"/danhdoi.png"}
+                        src={`https://res.cloudinary.com/moment-images/${track.track.image_file}`}
                         alt={"Đánh đổi"}
                         width={60}
                         height={60}
@@ -32,7 +108,7 @@ const SongItem = () => {
                 <div className="ml-3 flex-grow">
                     <div className="flex items-center">
                         <span className="font-medium block truncate max-w-[100px] sm:max-w-none">
-                            {"Đánh đổi"}
+                            {track.track.title}
                         </span>
 
                         {/* {track.explicit && <span className="ml-2 px-1 text-xs bg-gray-600 text-white rounded">E</span>} */}

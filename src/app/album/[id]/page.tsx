@@ -20,7 +20,9 @@ const AlbumPage = async (props: any) => {
 
     return (
         <>
-            <AlbumTitle />
+            <AlbumTitle 
+            res = {data}
+            />
         </>
     )
 }
