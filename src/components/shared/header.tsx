@@ -4,7 +4,7 @@ import type { MenuProps } from 'antd';
 import { Button, Dropdown, Space } from 'antd';
 import React, { useState, useEffect, useRef } from "react"; // Import React and useRef
 import { GalleryHorizontalEnd, MoveRight, Plus } from "lucide-react"
-import { usePathname, useRouter } from "next/navigation"; // Import useRouter
+import { redirect, usePathname, useRouter } from "next/navigation"; // Import useRouter
 
 const mockData = [
     { type: 'song', name: 'Tell the kids i love them', artist: 'Obito, Shiki' },
@@ -157,6 +157,10 @@ const Header = (props: IProps) => {
         },
     ];
 
+    const linkHome = () => {
+        router.push(`/`)
+    }
+
 
     return (
         <>
@@ -181,7 +185,9 @@ const Header = (props: IProps) => {
                      <i className="fa-brands fa-spotify ml-5 text-[35px]"></i>
 
                     {/* Home Button */}
-                     <button className="rounded-full bg-[#1f1f1f] ml-5 text-[25px] h-full w-[48px]">
+                     <button className="rounded-full bg-[#1f1f1f] ml-5 text-[25px] h-full w-[48px]"
+                     onClick={()=> {linkHome()}}
+                     >
                          <i className="fa-solid fa-house"></i>
                      </button>
 
