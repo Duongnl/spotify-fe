@@ -7,6 +7,8 @@ import { Resizable } from "re-resizable";
 
 interface VideoMiniplayerProps {
   videoUrl: string;
+  artistName: string;
+  trackName: string;
   onClose: () => void;
 }
 
