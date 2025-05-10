@@ -1,17 +1,37 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
+import { useState } from "react";
+import Image from "next/image";
 
+// Định nghĩa interface cho Artist
+interface Artist {
+  name: string;
+  image_file: string;
+}
+
+// Định nghĩa interface cho Item trong mảng artists
+interface ArtistItem {
+  artist: Artist;
+}
+
+// Định nghĩa interface cho Data
+interface TrackLyricData {
+  lyrics?: string;
+  artists: ArtistItem[];
+}
+
+// Định nghĩa interface cho Props
 interface TrackLyricProps {
-  data: any;
+  data: {
+    data: TrackLyricData;
+  };
 }
 
 export default function LyricsPage(props: TrackLyricProps) {
   const { data } = props;
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(false);
 
-  const lines = data.data.lyrics?.split("\n") || [];
+  const lines: string[] = data.data.lyrics?.split("\n") || [];
   const visibleLines = expanded ? lines : lines.slice(0, 10);
 
   return (
@@ -21,7 +41,7 @@ export default function LyricsPage(props: TrackLyricProps) {
         <h1 className="text-3xl font-bold mb-6">Lyrics</h1>
 
         <div className="space-y-2 text-gray-300 text-lg">
-          {visibleLines.map((line, index) => (
+          {visibleLines.map((line: string, index: number) => (
             <p key={index}>{line}</p>
           ))}
 
@@ -39,12 +59,10 @@ export default function LyricsPage(props: TrackLyricProps) {
       {/* Artists Section */}
       <div className="md:w-80">
         <div className="space-y-6">
-
-          {data.data.artists.map((item, index) => (
-            <div className="flex items-center gap-4">
+          {data.data.artists.map((item: ArtistItem, index: number) => (
+            <div key={index} className="flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden">
                 <Image
-                  key={index}
                   src={`https://res.cloudinary.com/moment-images/${item.artist.image_file}`}
                   alt={item.artist.name}
                   width={64}
@@ -58,11 +76,8 @@ export default function LyricsPage(props: TrackLyricProps) {
               </div>
             </div>
           ))}
-
-
-
         </div>
       </div>
     </div>
-  )
+  );
 }
