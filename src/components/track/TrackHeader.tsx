@@ -1,19 +1,46 @@
-"use client"
-import Image from 'next/image';
-import { formatDuration } from '@/utils/format';
-import Link from 'next/link';
+"use client";
 
-interface TrackHeaderProps {
-  data: any;
+import Image from "next/image";
+import { formatDuration } from "@/utils/format";
+import Link from "next/link";
+
+// Định nghĩa interface cho Artist
+interface Artist {
+  id: string;
+  name: string;
 }
-export default function TrackHeader(props : TrackHeaderProps) {
-    const {data} = props;
-    console.log(data);
+
+// Định nghĩa interface cho ArtistItem trong mảng artists
+interface ArtistItem {
+  owner: boolean;
+  artist: Artist;
+}
+
+// Định nghĩa interface cho TrackHeaderData
+interface TrackHeaderData {
+  image_file: string;
+  title: string;
+  artists: ArtistItem[];
+  releaseDate: string;
+  duration: number;
+  playCount: number;
+}
+
+// Định nghĩa interface cho Props
+interface TrackHeaderProps {
+  data: {
+    data: TrackHeaderData;
+  };
+}
+
+export default function TrackHeader(props: TrackHeaderProps) {
+  const { data } = props;
+  console.log(data);
+
   return (
     <div className="flex items-center bg-[#1a2a3a] text-white p-4 mt-4 ml-4 rounded-lg">
-      <div className="flex flex-col md:flex-row  w-full mx-auto gap-6">
+      <div className="flex flex-col md:flex-row w-full mx-auto gap-6">
         <div className="relative w-full md:w-80 h-60 shrink-0">
-          
           <Image
             src={`https://res.cloudinary.com/moment-images/${data.data.image_file}`}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -41,19 +68,19 @@ export default function TrackHeader(props : TrackHeaderProps) {
             </div>
 
             <div className="flex items-center gap-2 text-gray-300">
-            {data.data.artists
-              .filter(item => item.owner === true)
-                .map((item, index, array) => (
+              {data.data.artists
+                .filter((item: ArtistItem) => item.owner === true)
+                .map((item: ArtistItem, index: number, array: ArtistItem[]) => (
                   <span key={index}>
-                  <Link 
-                  href={`/artist/${item.artist.id}`} // Thay # bằng đường dẫn thực tế
-
-                  className="no-underline hover:underline">
+                    <Link
+                      href={`/artist/${item.artist.id}`}
+                      className="no-underline hover:underline"
+                    >
                       {item.artist.name}
-                  </Link>
-                {index < array.length - 1 && ' - '}
-              </span>
-            ))}
+                    </Link>
+                    {index < array.length - 1 && " - "}
+                  </span>
+                ))}
 
               <span className="text-gray-400">•</span>
               <span>{data.data.releaseDate}</span>
@@ -66,6 +93,5 @@ export default function TrackHeader(props : TrackHeaderProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
