@@ -22,7 +22,7 @@ import { Plus, Heart } from "lucide-react"
 import { usePlaybarContext } from "@/context/playbar-context";
 import { useRouter } from "next/navigation";
 import cookie from "js-cookie"
-
+import  VideoMiniplayer  from "@/components/shared/video/VideoMiniplayer";
 interface IProps {
     isQueueBarOpen: boolean,
     setIsQueueBarOpen: (v: boolean) => void
@@ -30,7 +30,7 @@ interface IProps {
 }
 
 const PlayBar = (props: IProps) => {
-    const { currentAudioPlaying, isPlaying, playMusic, artistName, trackName, img, currentTime, duration, audioRef, setCurrentTime, idPlaybar } = usePlaybarContext();
+    const { currentAudioPlaying, isPlaying, playMusic, artistName, trackName, img, currentTime, duration, audioRef, setCurrentTime, idPlaybar , videoUrl} = usePlaybarContext();
 
     const handlePlayMusic = async () => {
 
@@ -41,6 +41,7 @@ const PlayBar = (props: IProps) => {
     const { isQueueBarOpen, setIsQueueBarOpen } = props
     const [isPlayBarMobile, setIsPlayBarMobile] = useState(false)
     const isSmallScreen = useScreenSize("(max-width: 970px)");
+    const [isMiniplayerOpen, setIsMiniplayerOpen] = useState(false);
 
     useEffect(() => {
         if (isSmallScreen) {
@@ -212,7 +213,11 @@ const PlayBar = (props: IProps) => {
                                 <button className="text-gray-400 hover:text-white">
                                     <Pencil size={18} />
                                 </button>
-                                <button className="text-gray-400 hover:text-white">
+                                <button
+                                    className="text-gray-400 hover:text-white"
+                                    onClick={() => setIsMiniplayerOpen(!isMiniplayerOpen)}
+                                    disabled={!videoUrl} // Vô hiệu hóa nút nếu không có videoUrl
+                                >
                                     <MonitorSmartphone size={18} />
                                 </button>
                                 <button className="text-gray-400 hover:text-white">
@@ -262,6 +267,14 @@ const PlayBar = (props: IProps) => {
                     </>
                 )
             }
+
+           {isMiniplayerOpen && videoUrl && (
+            <VideoMiniplayer 
+                videoUrl={videoUrl}
+                artistName={artistName}
+                trackName={trackName}
+                onClose={() => setIsMiniplayerOpen(false)} />
+            )}
 
 
         </>
