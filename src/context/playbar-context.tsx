@@ -26,6 +26,8 @@ type PlaybarContextType = {
   setIdPlaybar: (v: any) => void
   idPlaybar: any
   videoUrl: string;
+  setIsSeeking: (v: any) => void,
+  isSeeking: any
 };
 
 const PlaybarContext = createContext<PlaybarContextType | undefined>(undefined);
@@ -48,6 +50,7 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
   const [duration, setDuration] = useState<number>(0);
   const [idPlaybar, setIdPlaybar] = useState<any>("");
   const [videoUrl, setVideoUrl] = useState<string>("");
+  const [isSeeking, setIsSeeking] = useState(false);
 
   useEffect(() => {
     if (user?.playbar?.track) {
@@ -82,39 +85,43 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
 
       const data = await res.json();
       if (data && data.status === 200) {
-        
 
-       
-      
         const audio = new Audio(`https://res.cloudinary.com/moment-images/${data.data.track_file}`);
         audioRef.current = audio;
-       
 
-        if (trackId != currentAudioPlaying){
-            audio.currentTime = 0;
-            await fetchSaveCurrentTime(data.data.id, 0); // Lưu thời gian vào DB
+
+        if (trackId !== currentAudioPlaying) {
+          audio.currentTime = 0;
+          await fetchSaveCurrentTime(data.data.id, 0);
         } else {
-          audio.currentTime = currentTime
+          const shouldReset = currentTime >= (duration || Number.MAX_VALUE);
+          if (shouldReset) {
+            audio.currentTime = 0;
+            await fetchSaveCurrentTime(data.data.id, 0);
+          } else {
+            audio.addEventListener("loadedmetadata", () => {
+              audio.currentTime = currentTime;
+              setDuration(audio.duration);
+            });
+          }
         }
 
-        // Gán sự kiện khi metadata đã load để lấy duration
-        audio.addEventListener("loadedmetadata", () => {
-          setDuration(audio.duration);
-        });
+
 
         // Gán sự kiện timeupdate để cập nhật currentTime
         audio.addEventListener("timeupdate", () => {
-          setCurrentTime(audio.currentTime);
+          if (!isSeeking) {
+            setCurrentTime(audio.currentTime);
+          }
         });
 
         // Khi kết thúc
         audio.addEventListener("ended", async () => {
-          await fetchSaveCurrentTime(currentAudioPlaying, currentTime)
+          await fetchSaveCurrentTime(currentAudioPlaying, audio.currentTime)
           setIsPlaying(false);
           audioRef.current = null;
         });
 
-      
 
         audio.play()
           .then(() => setIsPlaying(true))
@@ -125,9 +132,9 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
         const name = data.data.artists.map((artist: any) => artist.artist.name).join(", ");
         console.log("Name play bar: ", name);
 
-        const video  = data.data.video_file;
+        const video = data.data.video_file;
         console.log("Video track: ", video);
-        
+
         setVideoUrl(video);
         setArtistName(name);
         setTrackName(data.data.title);
@@ -145,12 +152,12 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const fetchSaveCurrentTime = async (id:any, currTime:any) => {
+  const fetchSaveCurrentTime = async (id: any, currTime: any) => {
 
     const dataRes = {
-      track_id:id,
+      track_id: id,
       currentTime: Math.floor(currTime),
-      is_repeat:true
+      is_repeat: true
     }
 
     const res = await fetch(`${API.PLAYBAR.UPDATE}${idPlaybar}/`, {
@@ -193,7 +200,9 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
       setDuration,
       setIdPlaybar,
       idPlaybar,
-      videoUrl
+      videoUrl,
+      setIsSeeking,
+      isSeeking
     }}>
       {children}
     </PlaybarContext.Provider>

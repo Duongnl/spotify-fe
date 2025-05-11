@@ -22,7 +22,7 @@ import { Plus, Heart } from "lucide-react"
 import { usePlaybarContext } from "@/context/playbar-context";
 import { useRouter } from "next/navigation";
 import cookie from "js-cookie"
-import  VideoMiniplayer  from "@/components/shared/video/VideoMiniplayer";
+import VideoMiniplayer from "@/components/shared/video/VideoMiniplayer";
 interface IProps {
     isQueueBarOpen: boolean,
     setIsQueueBarOpen: (v: boolean) => void
@@ -30,7 +30,7 @@ interface IProps {
 }
 
 const PlayBar = (props: IProps) => {
-    const { currentAudioPlaying, isPlaying, playMusic, artistName, trackName, img, currentTime, duration, audioRef, setCurrentTime, idPlaybar , videoUrl} = usePlaybarContext();
+    const { currentAudioPlaying, isPlaying, playMusic, artistName, trackName, img, currentTime, duration, audioRef, setCurrentTime, idPlaybar, videoUrl, setIsSeeking, isSeeking } = usePlaybarContext();
 
     const handlePlayMusic = async () => {
 
@@ -96,6 +96,16 @@ const PlayBar = (props: IProps) => {
         playMusic(currentAudioPlaying)
         setIsMiniplayerOpen(!isMiniplayerOpen)
     }
+
+    useEffect(() => {
+        const handlePointerUp = () => setIsSeeking(false);
+
+        window.addEventListener("pointerup", handlePointerUp);
+        return () => {
+            window.removeEventListener("pointerup", handlePointerUp);
+        };
+    }, []);
+
 
     return (
         <>
@@ -186,25 +196,31 @@ const PlayBar = (props: IProps) => {
                                 </div> */}
                                 <div className="flex items-center w-full">
                                     <p className="text-sm">{formatTime(currentTime)}</p>
-                                    <Slider
+
+                                    <div
                                         className="mx-[20px] w-full"
-                                        value={currentTime}
-                                        max={duration}
-                                        step={1}
-                                        onChange={(value) => {
-                                            if (typeof value === 'number') {
-                                                setCurrentTime(value);
-                                            }
-                                        }}
-                                        onAfterChange={(value) => {
-                                            if (typeof value === 'number' && audioRef.current) {
-                                                audioRef.current.currentTime = value;
-                                            }
-                                        }}
-                                    />
+                                        onPointerDown={() => setIsSeeking(true)}
+                                    >
+                                        <Slider
+                                            value={currentTime}
+                                            max={duration}
+                                            step={1}
+                                            onChange={(value) => {
+                                                if (typeof value === "number") {
+                                                    setCurrentTime(value);
+                                                    if (audioRef.current && isSeeking) {
+                                                        audioRef.current.currentTime = value;
+                                                    }
+                                                }
+                                            }}
+                                        />
+                                    </div>
 
                                     <p className="text-sm">{formatTime(duration)}</p>
                                 </div>
+
+
+
 
                             </div>
 
@@ -273,12 +289,12 @@ const PlayBar = (props: IProps) => {
                 )
             }
 
-           {isMiniplayerOpen && videoUrl && (
-            <VideoMiniplayer 
-                videoUrl={videoUrl}
-                artistName={artistName}
-                trackName={trackName}
-                onClose={() => setIsMiniplayerOpen(false)} />
+            {isMiniplayerOpen && videoUrl && (
+                <VideoMiniplayer
+                    videoUrl={videoUrl}
+                    artistName={artistName}
+                    trackName={trackName}
+                    onClose={() => setIsMiniplayerOpen(false)} />
             )}
 
 
