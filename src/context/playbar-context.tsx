@@ -25,7 +25,7 @@ type PlaybarContextType = {
   setDuration: (v: number) => void
   setIdPlaybar: (v: any) => void
   idPlaybar: any
-
+  videoUrl: string;
 };
 
 const PlaybarContext = createContext<PlaybarContextType | undefined>(undefined);
@@ -47,7 +47,7 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [idPlaybar, setIdPlaybar] = useState<any>("");
-
+  const [videoUrl, setVideoUrl] = useState<string>("");
 
   useEffect(() => {
     if (user?.playbar?.track) {
@@ -58,6 +58,7 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
       setDuration(user.playbar.track.duration)
       setIdPlaybar(user.playbar.id)
       setCurrentTime(user.playbar.currentTime)
+      setVideoUrl(user.playbar.track.video_file)
     }
   }, [user])
 
@@ -122,6 +123,12 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
         setCurrentAudioPlaying(trackId);
 
         const name = data.data.artists.map((artist: any) => artist.artist.name).join(", ");
+        console.log("Name play bar: ", name);
+
+        const video  = data.data.video_file;
+        console.log("Video track: ", video);
+        
+        setVideoUrl(video);
         setArtistName(name);
         setTrackName(data.data.title);
         setImg(data.data.image_file);
@@ -185,8 +192,8 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
       duration,
       setDuration,
       setIdPlaybar,
-      idPlaybar
-
+      idPlaybar,
+      videoUrl
     }}>
       {children}
     </PlaybarContext.Provider>
