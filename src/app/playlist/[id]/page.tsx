@@ -16,11 +16,13 @@ const PlaylistPage = async (props: any) => {
       });
     
       const data = await res.json();
+      console.log(data)
 
     return (
         <>
             <PlaylistContainer
-                res = {data}
+                response = {data}
+                params = {params.id}
             />
         </>
     )
