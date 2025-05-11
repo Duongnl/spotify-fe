@@ -15,10 +15,11 @@ interface Props {
     track: any
     name: string
     fetchAPi?: () => void
+    setNewQueueTracks: (v:any) =>void
 }
 
 const SongItem = (props: Props) => {
-    const { track, name, fetchAPi } = props
+    const { track, name, fetchAPi, setNewQueueTracks } = props
 
     const { currentAudioPlaying, setCurrentAudioPlaying, audioRef, isPlaying, setIsPlaying, playMusic,
     } = usePlaybarContext();
@@ -27,6 +28,8 @@ const SongItem = (props: Props) => {
 
 
     const handlePlayMusic = () => {
+        setNewQueueTracks(track.track.id)
+    
         playMusic(track.track.id)
     }
 

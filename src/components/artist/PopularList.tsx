@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import API from "@/api/api";
 import cookie from "js-cookie";
 import { useSidebarContext } from "@/context/sidebar-context";
+import { useQueuebarContext } from "@/context/queuebar-context";
 interface PopularTracksListProps {
   data: any;
 }
@@ -74,53 +75,65 @@ export default function PopularTracksList(props: PopularTracksListProps) {
   // };
 
   const handlePlayMusic = (e: string) => {
+    setNewQueueTracks(e)
     playMusic(e)
   }
 
 
 
-      const { playlists } = useSidebarContext();
-    const [items, setItems] = useState<MenuProps['items']>([])
-    useEffect(() => {
-        const is: MenuProps['items'] = []
-        for (const playlist of playlists) {
-            const item = {
-                key: playlist.id,
-                label: (
+  const { playlists } = useSidebarContext();
+  const [items, setItems] = useState<MenuProps['items']>([])
+  useEffect(() => {
+    const is: MenuProps['items'] = []
+    for (const playlist of playlists) {
+      const item = {
+        key: playlist.id,
+        label: (
 
-                    playlist.name
+          playlist.name
 
-                ),
-            }
-            is.push(item)
-        }
-        setItems(is)
-    }, [playlists])
-
-    const handleAddToPlaylist = async (e: string, id:string) => {
-        const request = {
-            playlist_id: e,
-            track_id: id,
-            trackNumber: 1
-        }
-
-        const res = await fetch(API.PLAYLIST.PLAYLIST_TRACK, {
-            method: "POST", // Đúng phương thức POST
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json", // Đặt Content-Type là JSON
-                Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
-            },
-            body: JSON.stringify(request), // Gửi dữ liệu JSON
-        });
-
-        const data = await res.json();
-        if (data && data.status === 200) {
-             toast.success(`Đã thêm vào playlist`)
-        } else {
-            toast.error(`Đã tồn tại trong playlist`)
-        }
+        ),
+      }
+      is.push(item)
     }
+    setItems(is)
+  }, [playlists])
+
+  const handleAddToPlaylist = async (e: string, id: string) => {
+    const request = {
+      playlist_id: e,
+      track_id: id,
+      trackNumber: 1
+    }
+
+    const res = await fetch(API.PLAYLIST.PLAYLIST_TRACK, {
+      method: "POST", // Đúng phương thức POST
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json", // Đặt Content-Type là JSON
+        Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+      },
+      body: JSON.stringify(request), // Gửi dữ liệu JSON
+    });
+
+    const data = await res.json();
+    if (data && data.status === 200) {
+      toast.success(`Đã thêm vào playlist`)
+    } else {
+      toast.error(`Đã tồn tại trong playlist`)
+    }
+  }
+
+  const {fetchGetQueueTracks } = useQueuebarContext()
+  
+  const setNewQueueTracks = (v: any) => {
+    let dataTracks: any = []
+    for (let i = 0; i < data.data.tracks.length; i++) {
+
+      dataTracks.push(data.data.tracks[i].track)
+    }
+    fetchGetQueueTracks(dataTracks, v)
+  }
 
   console.log("PopularTracksList data: ", data);
 
@@ -205,10 +218,10 @@ export default function PopularTracksList(props: PopularTracksListProps) {
                   </button>
                 </Dropdown>
 
-                 <button className="h-8 w-8 text-gray-400 opacity-0 group-hover:opacity-100"
-                  >
-                    <Plus size={16} />
-                  </button>
+                <button className="h-8 w-8 text-gray-400 opacity-0 group-hover:opacity-100"
+                >
+                  <Plus size={16} />
+                </button>
 
 
 

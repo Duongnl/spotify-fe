@@ -130,6 +130,7 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
         setCurrentAudioPlaying(trackId);
 
         const name = data.data.artists.map((artist: any) => artist.artist.name).join(", ");
+        
         console.log("Name play bar: ", name);
 
         const video = data.data.video_file;

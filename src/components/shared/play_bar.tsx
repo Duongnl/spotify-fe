@@ -268,22 +268,24 @@ const PlayBar = (props: IProps) => {
                 isPlayBarMobile && (
                     <>
                         <div className="w-full pl-[20px] pr-[10px]" >
-                            <Slider
+                            <div
                                 className="mx-[20px] w-full"
-                                value={currentTime}
-                                max={duration}
-                                step={1}
-                                onChange={(value) => {
-                                    if (typeof value === 'number') {
-                                        setCurrentTime(value);
-                                    }
-                                }}
-                                onAfterChange={(value) => {
-                                    if (typeof value === 'number' && audioRef.current) {
-                                        audioRef.current.currentTime = value;
-                                    }
-                                }}
-                            />
+                                onPointerDown={() => setIsSeeking(true)}
+                            >
+                                <Slider
+                                    value={currentTime}
+                                    max={duration}
+                                    step={1}
+                                    onChange={(value) => {
+                                        if (typeof value === "number") {
+                                            setCurrentTime(value);
+                                            if (audioRef.current && isSeeking) {
+                                                audioRef.current.currentTime = value;
+                                            }
+                                        }
+                                    }}
+                                />
+                            </div>
                         </div>
                     </>
                 )

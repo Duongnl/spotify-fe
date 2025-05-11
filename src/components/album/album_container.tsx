@@ -5,6 +5,7 @@ import { Play, Plus, Heart } from "lucide-react"
 import RowHomeContent from '../home/RowHomeContent';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useQueuebarContext } from '@/context/queuebar-context';
 
 interface Props {
     res: any
@@ -19,21 +20,32 @@ const AlbumTitle = (props: Props) => {
 
     const [rowHomeResponse, setRowHomeResponse] = useState<RowHomeResponse[]>([])
     useEffect(() => {
-        let arr:RowHomeResponse[] = [] 
+        let arr: RowHomeResponse[] = []
         for (let i = 0; i < resAlbum.data.length; i++) {
-           const item:RowHomeResponse = {
-            link:'/album/',
-            id: resAlbum.data[i].id,
-            img: resAlbum.data[i].imageUrl,
-            title1: resAlbum.data[i].title,
-            title2: resAlbum.data[i].artist.name
-           } 
+            const item: RowHomeResponse = {
+                link: '/album/',
+                id: resAlbum.data[i].id,
+                img: resAlbum.data[i].imageUrl,
+                title1: resAlbum.data[i].title,
+                title2: resAlbum.data[i].artist.name
+            }
             arr.push(item)
         }
         setRowHomeResponse(arr)
 
 
     }, [])
+
+    const {fetchGetQueueTracks } = useQueuebarContext()
+
+    const setNewQueueTracks = (v:any) => {
+        let dataTracks:any = []
+        for (let i = 0; i <res.data.tracks.length; i++) {
+           
+            dataTracks.push(res.data.tracks[i].track)
+        }
+        fetchGetQueueTracks(dataTracks, v)
+    }
 
 
     return (
@@ -87,6 +99,7 @@ const AlbumTitle = (props: Props) => {
                 <button
                     className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
                     aria-label="Play"
+                //  onClick={() => {setNewQueueTracks()}}
                 >
                     <Play className="w-7 h-7 fill-current" />
                 </button>
@@ -105,7 +118,8 @@ const AlbumTitle = (props: Props) => {
 
                     <SongItem
                         track={track}
-                        name={""}
+                        name={"album"}
+                        setNewQueueTracks={setNewQueueTracks}
                     />
                 ))}
 
