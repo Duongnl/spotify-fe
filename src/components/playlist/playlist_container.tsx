@@ -1,17 +1,44 @@
 "use client"
 import Image from 'next/image';
-
+import cookie from 'js-cookie';
 import { Play, Plus, Heart } from "lucide-react"
 import RowHomeContent from '../home/RowHomeContent';
 import SongItem from '../album/song_item';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import API from '@/api/api';
 
 interface Props {
-    res: any
+    response: any
+    params:string
 }
 
 const PlaylistContainer = (props: Props) => {
-    const { res } = props
+    const { response, params } = props
+    const [res,setRes] = useState<any>(response)
+
+    const path = usePathname();
+    useEffect(() => {
+       
+        
+        fetchAPi()
+    }, [params])
+
+     const fetchAPi = async () => {
+            const res = await fetch(API.PLAYLIST.GET_PLAYLIST(params), {
+                method: "GET", // Đúng phương thức POST
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json", // Đặt Content-Type là JSON
+                    Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+                },
+            });
+            const data = await res.json();
+            if (data && data.status ===200) {
+                setRes(data)
+            }
+        }
 
     return (
         <>
@@ -70,16 +97,17 @@ const PlaylistContainer = (props: Props) => {
 
             </div>
             <div className="bg-black text-white p-6">
-                
+
                 {res.data.tracks?.map((track: any, index: any) => (
 
                     <SongItem
                         track={track}
-                        name={""}
+                        name={"playlist"}
+                        fetchAPi = {fetchAPi}
                     />
                 ))}
 
-             
+
                 <div className="space-y-2">
                 </div>
             </div>

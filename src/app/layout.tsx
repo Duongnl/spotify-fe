@@ -11,6 +11,8 @@ import 'rc-slider/assets/index.css';
 import { PlaybarProvider } from "@/context/playbar-context";
 import { UserProvider } from "@/context/user-context";
 import { SidebarProvider } from "@/context/sidebar-context";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -46,7 +48,21 @@ export default function RootLayout({
             <UserProvider>
               <PlaybarProvider>
                 <SidebarProvider>
-                  <MainLayout>{children}</MainLayout>
+                  <MainLayout>
+                    {children}
+                    <ToastContainer
+                      position="bottom-center"
+                      autoClose={1200}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      theme="dark"
+                    />
+                  </MainLayout>
                 </SidebarProvider>
               </PlaybarProvider>
             </UserProvider>

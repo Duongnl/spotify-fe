@@ -92,6 +92,11 @@ const PlayBar = (props: IProps) => {
         }
     };
 
+    const openVideo = () => {
+        playMusic(currentAudioPlaying)
+        setIsMiniplayerOpen(!isMiniplayerOpen)
+    }
+
     return (
         <>
             <div className="flex justify-between  p-2 w-full">
@@ -215,7 +220,7 @@ const PlayBar = (props: IProps) => {
                                 </button>
                                 <button
                                     className="text-gray-400 hover:text-white"
-                                    onClick={() => setIsMiniplayerOpen(!isMiniplayerOpen)}
+                                    onClick={() => openVideo()}
                                     disabled={!videoUrl} // Vô hiệu hóa nút nếu không có videoUrl
                                 >
                                     <MonitorSmartphone size={18} />

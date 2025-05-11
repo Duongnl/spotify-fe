@@ -105,7 +105,7 @@ const AlbumTitle = (props: Props) => {
 
                     <SongItem
                         track={track}
-                        name={res.data.artist.name}
+                        name={""}
                     />
                 ))}
 
