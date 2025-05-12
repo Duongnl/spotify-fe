@@ -5,27 +5,21 @@ import { Button, Dropdown, Space } from 'antd';
 import React, { useState, useEffect, useRef } from "react"; // Import React and useRef
 import { GalleryHorizontalEnd, MoveRight, Plus } from "lucide-react"
 import { redirect, usePathname, useRouter } from "next/navigation"; // Import useRouter
+import API from '@/api/api';
+import cookie from "js-cookie"
 import Link from 'next/link';
 import { useUserContext } from '@/context/user-context';
 
-const mockData = [
-    { type: 'song', name: 'Tell the kids i love them', artist: 'Obito, Shiki' },
-    { type: 'song', name: 'Timeless', artist: 'The Weeknd, Playboi Carti' },
-    { type: 'song', name: 'PHONG ZIN ZIN', artist: 'tlinh, Low G' },
-    { type: 'song', name: 'Tell Ur Mom II', artist: 'Winno, Hustlang Heily' },
-    { type: 'song', name: 'Tell Ur Mom I', artist: 'Winno, Hustlang Heily' },
-    { type: 'song', name: 'Fifth Song', artist: 'Fifth Artist' }, // Added more mock data
-    { type: 'song', name: 'Sixth Song', artist: 'Sixth Artist' },
-    { type: 'song', name: 'Seventh Song', artist: 'Seventh Artist' },
-];
 
 interface IProps {
     isSideBarMobile: boolean,
 
     isSidebarOpen: boolean,
     setIsSidebarOpen: (v: boolean) => void
-    
+
 }
+
+
 
 const Header = (props: IProps) => {
     const { isSideBarMobile, isSidebarOpen, setIsSidebarOpen } = props;
@@ -44,6 +38,50 @@ const Header = (props: IProps) => {
     const [showDropdown, setShowDropdown] = useState(false);
     // Ref cho container tìm kiếm
     const searchContainerRef = useRef<HTMLDivElement>(null); // Specify type for ref
+
+  const [mockData, setMockData] = useState([
+    { type: 'song', name: 'Tell the kids i love them', artist: 'Obito, Shiki' },
+    { type: 'song', name: 'Timeless', artist: 'The Weeknd, Playboi Carti' },
+    { type: 'song', name: 'PHONG ZIN ZIN', artist: 'tlinh, Low G' },
+    { type: 'song', name: 'Tell Ur Mom II', artist: 'Winno, Hustlang Heily' },
+    { type: 'song', name: 'Tell Ur Mom I', artist: 'Winno, Hustlang Heily' },
+    { type: 'song', name: 'Fifth Song', artist: 'Fifth Artist' }, // Added more mock data
+    { type: 'song', name: 'Sixth Song', artist: 'Sixth Artist' },
+    { type: 'song', name: 'Seventh Song', artist: 'Seventh Artist' },
+  ])
+
+
+    useEffect(() => {
+    const fetchapi = async () => {
+        const resTracks = await fetch(API.TRACK.GET_TRACKS, {
+            method: "GET", // Đúng phương thức POST
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json", // Đặt Content-Type là JSON
+                Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+            },
+        });
+        // const dataTracks = await resTracks.json();
+        // console.log("dataa >>> ", dataTracks)
+
+          const { data } = await resTracks.json();
+
+            const formattedData = data.map((track:any) => {
+                const artistNames = track.artists
+                    .map((artistData:any) => artistData.artist.name)
+                    .join(", ");
+
+                return {
+                    type: "song",
+                    name: track.title,
+                    artist: artistNames,
+                };
+            });
+
+            setMockData(formattedData);
+    }
+    fetchapi()
+}, [])
 
     // Effect để xử lý tìm kiếm/lọc khi query thay đổi
     useEffect(() => {
@@ -95,11 +133,11 @@ const Header = (props: IProps) => {
     const handleShowSearchMobile = () => {
         // Toggle mobile search, ensure dropdown is hidden when closed
         setIsSearchMobileOpen(!isSearchMobileOpen);
-         if(isSearchMobileOpen) { // If closing
-             setShowDropdown(false); // Hide dropdown
-             setQuery(''); // Clear query
-             setResults([]); // Clear results
-         }
+        if (isSearchMobileOpen) { // If closing
+            setShowDropdown(false); // Hide dropdown
+            setQuery(''); // Clear query
+            setResults([]); // Clear results
+        }
     }
 
     const handleShowSidebarMobile = () => {
@@ -126,18 +164,18 @@ const Header = (props: IProps) => {
         }
     };
 
-     // Hàm xử lý click vào 1 item trong dropdown (tùy chọn)
-     const handleItemClick = (item: typeof mockData[0]) => {
-         // Ví dụ: Chuyển hướng đến trang chi tiết bài hát
-         // router.push(`/song/${item.id}`); // Giả định item có id
-         console.log("Clicked item:", item); // Log ra để test
+    // Hàm xử lý click vào 1 item trong dropdown (tùy chọn)
+    const handleItemClick = (item: typeof mockData[0]) => {
+        // Ví dụ: Chuyển hướng đến trang chi tiết bài hát
+        router.push(`/search/${item.name}`); // Giả định item có id
+        console.log("Clicked item:", item); // Log ra để test
 
-         // Ẩn dropdown sau khi click vào item
-         setShowDropdown(false);
-         // Tùy chọn: Xóa nội dung input và kết quả
-         // setQuery('');
-         // setResults([]);
-     }
+        // Ẩn dropdown sau khi click vào item
+        setShowDropdown(false);
+        // Tùy chọn: Xóa nội dung input và kết quả
+        // setQuery('');
+        // setResults([]);
+    }
 
 
     const items: MenuProps['items'] = [
@@ -184,14 +222,14 @@ const Header = (props: IProps) => {
                     }
 
                     {/* Logo (Example using spotify icon) */}
-                     <i className="fa-brands fa-spotify ml-5 text-[35px]"></i>
+                    <i className="fa-brands fa-spotify ml-5 text-[35px]"></i>
 
                     {/* Home Button */}
-                     <button className="rounded-full bg-[#1f1f1f] ml-5 text-[25px] h-full w-[48px]"
-                     onClick={()=> {linkHome()}}
-                     >
-                         <i className="fa-solid fa-house"></i>
-                     </button>
+                    <button className="rounded-full bg-[#1f1f1f] ml-5 text-[25px] h-full w-[48px]"
+                        onClick={() => { linkHome() }}
+                    >
+                        <i className="fa-solid fa-house"></i>
+                    </button>
 
 
                     {/* Desktop Search Input + Dropdown */}
@@ -210,9 +248,9 @@ const Header = (props: IProps) => {
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     onFocus={() => {
-                                         // Hiện dropdown khi focus, ngay cả khi query rỗng,
-                                         // nội dung dropdown sẽ được kiểm soát bởi logic results.length > 0
-                                         setShowDropdown(true);
+                                        // Hiện dropdown khi focus, ngay cả khi query rỗng,
+                                        // nội dung dropdown sẽ được kiểm soát bởi logic results.length > 0
+                                        setShowDropdown(true);
                                     }}
                                     onKeyDown={handleKeyPress} // <-- Thêm onKeyDown
                                 />
@@ -254,7 +292,7 @@ const Header = (props: IProps) => {
                                                 )}
                                             </ul>
                                         ) : (
-                                             // Optional: Hiển thị thông báo khi không có kết quả nhưng dropdown vẫn mở
+                                            // Optional: Hiển thị thông báo khi không có kết quả nhưng dropdown vẫn mở
                                             <div className="px-4 py-2 text-white">No results found</div>
                                         )}
                                     </div>
@@ -271,7 +309,7 @@ const Header = (props: IProps) => {
                         )
                     }
 
-                    
+
                 </div>
 
 
@@ -297,26 +335,26 @@ const Header = (props: IProps) => {
 
             {/* === Mobile Search Input (Separate from Desktop) === */}
             {/* Note: This mobile search input currently does not have dropdown logic */}
-             {
-                 isSearchDesktopOpen === false && isSearchMobileOpen && (
-                     <div className="relative w-full p-2"> {/* Added p-2 for padding */}
-                         {/* Need to implement search functionality here for mobile */}
-                         <input
-                             type="text"
-                             placeholder="Search"
-                             className="text-[15px] w-full bg-[#1f1f1f]/90 focus-visible:outline-none
+            {
+                isSearchDesktopOpen === false && isSearchMobileOpen && (
+                    <div className="relative w-full p-2"> {/* Added p-2 for padding */}
+                        {/* Need to implement search functionality here for mobile */}
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            className="text-[15px] w-full bg-[#1f1f1f]/90 focus-visible:outline-none
              absolute top-0 left-0 z-[9999] p-3 rounded-md shadow-lg text-white placeholder-gray-400" // Added text/placeholder color
-                             value={query} // Sử dụng cùng state query
-                             onChange={(e) => setQuery(e.target.value)} // Cập nhật cùng state query
-                             onKeyDown={handleKeyPress} // Thêm onKeyDown cho mobile search
-                              onFocus={() => setShowDropdown(true)} // Hiện dropdown khi focus mobile input (nếu muốn)
-                         />
-                         {/* Lớp phủ mờ riêng biệt */}
-                         {/* Consider putting the mobile search dropdown here, similar to desktop */}
-                         {/* <div className="absolute inset-0 bg-[#1f1f1f]/50 backdrop-blur-lg z-[-1] rounded-md"></div> */}
-                     </div>
-                 )
-             }
+                            value={query} // Sử dụng cùng state query
+                            onChange={(e) => setQuery(e.target.value)} // Cập nhật cùng state query
+                            onKeyDown={handleKeyPress} // Thêm onKeyDown cho mobile search
+                            onFocus={() => setShowDropdown(true)} // Hiện dropdown khi focus mobile input (nếu muốn)
+                        />
+                        {/* Lớp phủ mờ riêng biệt */}
+                        {/* Consider putting the mobile search dropdown here, similar to desktop */}
+                        {/* <div className="absolute inset-0 bg-[#1f1f1f]/50 backdrop-blur-lg z-[-1] rounded-md"></div> */}
+                    </div>
+                )
+            }
 
         </>
     );

@@ -144,10 +144,15 @@ const SongItem = (props: Props) => {
 
                 <div className="ml-3 flex-grow">
                     <div className="flex items-center">
+                        
                         <Link href={`/track/${track.track.id}`} className={`font-medium block truncate max-w-[100px] sm:max-w-none ${(isPlaying && currentAudioPlaying === track.track.id) && `text-[#00c853]`}`}>
                             {track.track.title}
                         </Link>
-                        {/* {track.explicit && <span className="ml-2 px-1 text-xs bg-gray-600 text-white rounded">E</span>} */}
+                        {name === 'search' && (
+                            <>
+                            <p className="ml-2 px-1 text-xs bg-gray-600 text-white rounded">{track.track.artists.map((artist: any) => artist.artist.name).join(", ")}</p>
+                            </>
+                        )} 
                     </div>
                 </div>
 
