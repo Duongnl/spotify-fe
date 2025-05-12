@@ -11,6 +11,8 @@ type QueuebarContextType = {
     fetchGetQueueTracks: (v?: any, id?: any) => void
     setIdTrackPlay: (v: any) => void
     idTrackPlay: any
+    setIdList: (v: any) => void
+    idList: any
 
 };
 
@@ -21,6 +23,7 @@ export const QueuebarProvider = ({ children }: { children: ReactNode }) => {
     const [queueTracks, setQueueTracks] = useState<any>([]);
     const [idTrackPlay, setIdTrackPlay] = useState("")
     const { user } = useUserContext()
+    const [idList, setIdList] = useState("")
 
     useEffect(() => {
         if (user?.playbar?.track) {
@@ -75,8 +78,9 @@ export const QueuebarProvider = ({ children }: { children: ReactNode }) => {
             queueTracks,
             fetchGetQueueTracks,
             setIdTrackPlay,
-            idTrackPlay
-
+            idTrackPlay,
+            setIdList,
+            idList
         }}>
             {children}
         </QueuebarContext.Provider>

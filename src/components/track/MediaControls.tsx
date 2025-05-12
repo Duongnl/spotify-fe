@@ -7,6 +7,7 @@ import { Dropdown, MenuProps } from "antd";
 import API from "@/api/api";
 import cookie from 'js-cookie';
 import { toast } from "react-toastify";
+import { useQueuebarContext } from "@/context/queuebar-context";
 interface TrackMediaProps {
   data: any;
 }
@@ -28,8 +29,11 @@ export default function MediaControls(props: TrackMediaProps) {
   //     audio.play();
   //   }
   // };
+  const {setIdTrackPlay, fetchGetQueueTracks} = useQueuebarContext()
+
 
   const { playlists } = useSidebarContext();
+
   const [items, setItems] = useState<MenuProps['items']>([])
   useEffect(() => {
     const is: MenuProps['items'] = []
@@ -49,6 +53,8 @@ export default function MediaControls(props: TrackMediaProps) {
 
 
   const handlePlayMusic = () => {
+  
+    fetchGetQueueTracks([],data.data.id)
     playMusic(data.data.id)
   }
 

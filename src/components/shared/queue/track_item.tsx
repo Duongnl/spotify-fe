@@ -1,5 +1,6 @@
 "use client"
 
+import { usePlaybarContext } from "@/context/playbar-context"
 import { useQueuebarContext } from "@/context/queuebar-context"
 import Image from "next/image"
 interface Props {
@@ -9,11 +10,23 @@ interface Props {
 const TrackItem = (props: Props) => {
     const { track } = props
 
-    const {idTrackPlay} = useQueuebarContext()
+    const {idTrackPlay, setIdList} = useQueuebarContext()
+    const {playMusic} = usePlaybarContext()
+    const {setIdTrackPlay} = useQueuebarContext()
+
+    const handlePlay = () => {
+        setIdList("")
+        setIdTrackPlay(track.id)
+        playMusic(track.id)
+    }
+
+
 
     return (
         <>
-            <div className={`flex items-center gap-4 mt-4 cursor-pointer`} >
+            <div className={`flex items-center gap-4 mt-4 cursor-pointer`} 
+            onClick={() => {handlePlay()}}
+            >
                 <div className="relative rounded-[20px] overflow-hidden">
                     <Image
                          src={`https://res.cloudinary.com/moment-images/${track.image_file}`}
