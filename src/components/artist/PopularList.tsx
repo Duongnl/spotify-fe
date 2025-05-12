@@ -124,7 +124,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
     }
   }
 
-  const {fetchGetQueueTracks } = useQueuebarContext()
+  const {fetchGetQueueTracks, setIdTrackPlay } = useQueuebarContext()
   
   const setNewQueueTracks = (v: any) => {
     let dataTracks: any = []
@@ -132,6 +132,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
 
       dataTracks.push(data.data.tracks[i].track)
     }
+    // setIdTrackPlay(v)
     fetchGetQueueTracks(dataTracks, v)
   }
 

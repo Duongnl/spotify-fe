@@ -25,7 +25,7 @@ const QueueBar = (props: IProps) => {
     const { queueTracks, fetchGetQueueTracks } = useQueuebarContext()
 
     useEffect (() => {
-        fetchGetQueueTracks()
+        // fetchGetQueueTracks()
     },[])
 
     useEffect (() => {

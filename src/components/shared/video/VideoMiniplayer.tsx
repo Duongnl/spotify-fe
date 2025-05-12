@@ -17,7 +17,7 @@ const VideoMiniplayer: React.FC<VideoMiniplayerProps> = ({ videoUrl, artistName,
   const [isVisible, setIsVisible] = useState(true);
   const portalRoot = useRef<HTMLDivElement>(document.createElement("div"));
 
-   const { currentAudioPlaying, playMusic } = usePlaybarContext();
+  const { currentAudioPlaying, playMusic, isPlaying } = usePlaybarContext();
 
   // Thêm portal root vào body khi component mount
   useEffect(() => {
@@ -58,7 +58,10 @@ const VideoMiniplayer: React.FC<VideoMiniplayerProps> = ({ videoUrl, artistName,
   }
 
   const closeVideo = () => {
-    playMusic(currentAudioPlaying)
+    if (isPlaying) {
+      playMusic(currentAudioPlaying)
+    }
+
     setIsVisible(false);
     onClose();
   }

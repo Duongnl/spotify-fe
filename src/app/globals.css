@@ -105,3 +105,41 @@ body {
 .scroll-on-hover:not(:hover)::-webkit-scrollbar {
   display: none;
 }
+
+/* --------------------- */
+.custom-modal .ant-modal-content {
+  background-color: #1f1f1f !important;
+  color: white;
+}
+
+.custom-modal .ant-modal-header {
+  background-color: #1f1f1f  !important;
+}
+
+.custom-modal .ant-modal-header .ant-modal-title{
+  color: white;
+}
+
+.custom-modal .ant-modal-title {
+  color: white;
+}
+
+.custom-modal .ant-modal-footer {
+  background-color: #616161;
+  border-top: 1px solid #333;
+}
+
+.custom-modal .ant-modal-footer .ant-btn{
+  background-color: black;
+  color: white;
+  border: 0px;
+}
+
+.custom-modal .ant-modal-footer .ant-btn:hover{
+  background-color: black !important;
+  color: white !important;
+
+}
+
+
+/* ant-btn */

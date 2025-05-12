@@ -36,7 +36,7 @@ const AlbumTitle = (props: Props) => {
 
     }, [])
 
-    const {fetchGetQueueTracks } = useQueuebarContext()
+    const {fetchGetQueueTracks, setIdTrackPlay } = useQueuebarContext()
 
     const setNewQueueTracks = (v:any) => {
         let dataTracks:any = []
@@ -44,6 +44,7 @@ const AlbumTitle = (props: Props) => {
            
             dataTracks.push(res.data.tracks[i].track)
         }
+        // setIdTrackPlay(v)
         fetchGetQueueTracks(dataTracks, v)
     }
 

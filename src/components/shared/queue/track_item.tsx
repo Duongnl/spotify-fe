@@ -1,5 +1,6 @@
 "use client"
 
+import { useQueuebarContext } from "@/context/queuebar-context"
 import Image from "next/image"
 interface Props {
     track:any
@@ -7,6 +8,8 @@ interface Props {
 
 const TrackItem = (props: Props) => {
     const { track } = props
+
+    const {idTrackPlay} = useQueuebarContext()
 
     return (
         <>
@@ -21,7 +24,7 @@ const TrackItem = (props: Props) => {
                     />
                 </div>
                 <div>
-                    <p className="text-[16px] font-semibold">{track.title}</p>
+                    <p className={`text-[16px] font-semibold ${idTrackPlay === track.id && `text-[#00c853]`}`}>{track.title}</p>
                     <p className="text-gray-400 text-[16px]">{track?.artists?.map((artist: any) => artist.artist.name).join(", ")}</p>
                 </div>
             </div>

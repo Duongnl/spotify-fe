@@ -93,7 +93,9 @@ const PlayBar = (props: IProps) => {
     };
 
     const openVideo = () => {
-        playMusic(currentAudioPlaying)
+        if (isPlaying) {
+            playMusic(currentAudioPlaying)
+        }
         setIsMiniplayerOpen(!isMiniplayerOpen)
     }
 

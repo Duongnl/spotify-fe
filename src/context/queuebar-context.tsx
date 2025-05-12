@@ -8,7 +8,9 @@ type QueuebarContextType = {
 
     queueTracks: any,
     setQueueTracks: (v: any) => void
-    fetchGetQueueTracks: (v?: any, x?:any) => void
+    fetchGetQueueTracks: (v?: any, id?: any) => void
+    setIdTrackPlay: (v: any) => void
+    idTrackPlay: any
 
 };
 
@@ -17,8 +19,16 @@ const QueuebarContext = createContext<QueuebarContextType | undefined>(undefined
 export const QueuebarProvider = ({ children }: { children: ReactNode }) => {
 
     const [queueTracks, setQueueTracks] = useState<any>([]);
+    const [idTrackPlay, setIdTrackPlay] = useState("")
+    const { user } = useUserContext()
 
-    const fetchGetQueueTracks = async (arr?: any, idTrackPlay?: any) => {
+    useEffect(() => {
+        if (user?.playbar?.track) {
+            fetchGetQueueTracks([], user.playbar.track.id)
+        }
+    }, [user])
+
+    const fetchGetQueueTracks = async (arr?: any, id?: any) => {
         const resTracks = await fetch(API.TRACK.GET_TRACKS, {
             method: "GET", // Đúng phương thức POST
             headers: {
@@ -29,17 +39,22 @@ export const QueuebarProvider = ({ children }: { children: ReactNode }) => {
         });
         const dataTracks = await resTracks.json();
         if (dataTracks && dataTracks.status === 200) {
-            if (arr && idTrackPlay) {
+            if (arr && id) {
                 const idsInArray1 = new Set(arr.map((item: { id: string }) => item.id));
                 const uniqueFromArray2 = dataTracks.data.filter((item: { id: string }) => !idsInArray1.has(item.id));
+                const result = [...arr, ...uniqueFromArray2];
 
-                // Gộp 2 mảng lại
-                const combined = [...arr, ...uniqueFromArray2];
+                // Tìm index phần tử có id === id
+                const index = result.findIndex((item: any) => String(item.id) === String(id));
 
-                // Loại bỏ phần tử có id bằng idTrackPlay
-                const result = combined.filter((item: { id: string }) => item.id !== idTrackPlay);
+                if (index !== -1) {
+                    const [trackToTop] = result.splice(index, 1); // xóa khỏi mảng
+                    result.unshift(trackToTop); // đưa lên đầu
+                }
 
+                setIdTrackPlay(id)
                 setQueueTracks(result);
+                console.log("first >>> ", id)
             } else {
                 setQueueTracks(dataTracks.data);
             }
@@ -58,7 +73,9 @@ export const QueuebarProvider = ({ children }: { children: ReactNode }) => {
         <QueuebarContext.Provider value={{
             setQueueTracks,
             queueTracks,
-            fetchGetQueueTracks
+            fetchGetQueueTracks,
+            setIdTrackPlay,
+            idTrackPlay
 
         }}>
             {children}
