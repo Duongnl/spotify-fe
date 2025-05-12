@@ -13,6 +13,7 @@ import { UserProvider } from "@/context/user-context";
 import { SidebarProvider } from "@/context/sidebar-context";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { QueuebarProvider } from "@/context/queuebar-context";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -47,23 +48,25 @@ export default function RootLayout({
           <AntdRegistry>
             <UserProvider>
               <PlaybarProvider>
-                <SidebarProvider>
-                  <MainLayout>
-                    {children}
-                    <ToastContainer
-                      position="bottom-center"
-                      autoClose={1200}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      theme="dark"
-                    />
-                  </MainLayout>
-                </SidebarProvider>
+                <QueuebarProvider>
+                  <SidebarProvider>
+                    <MainLayout>
+                      {children}
+                      <ToastContainer
+                        position="bottom-center"
+                        autoClose={1200}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                      />
+                    </MainLayout>
+                  </SidebarProvider>
+                </QueuebarProvider>
               </PlaybarProvider>
             </UserProvider>
           </AntdRegistry>

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Draggable from "react-draggable";
 import { Resizable } from "re-resizable";
+import { usePlaybarContext } from "@/context/playbar-context";
 
 interface VideoMiniplayerProps {
   videoUrl: string;
@@ -15,6 +16,8 @@ interface VideoMiniplayerProps {
 const VideoMiniplayer: React.FC<VideoMiniplayerProps> = ({ videoUrl, artistName, trackName, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
   const portalRoot = useRef<HTMLDivElement>(document.createElement("div"));
+
+  const { currentAudioPlaying, playMusic, isPlaying } = usePlaybarContext();
 
   // Thêm portal root vào body khi component mount
   useEffect(() => {
@@ -52,6 +55,15 @@ const VideoMiniplayer: React.FC<VideoMiniplayerProps> = ({ videoUrl, artistName,
       </div>,
       portalRoot.current
     );
+  }
+
+  const closeVideo = () => {
+    if (isPlaying) {
+      playMusic(currentAudioPlaying)
+    }
+
+    setIsVisible(false);
+    onClose();
   }
 
   return createPortal(
@@ -93,8 +105,7 @@ const VideoMiniplayer: React.FC<VideoMiniplayerProps> = ({ videoUrl, artistName,
             </span>
             <button
               onClick={() => {
-                setIsVisible(false);
-                onClose();
+                closeVideo();
               }}
               style={{
                 background: "none",

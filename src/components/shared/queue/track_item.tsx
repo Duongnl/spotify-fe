@@ -1,14 +1,22 @@
 "use client"
 
+import { useQueuebarContext } from "@/context/queuebar-context"
 import Image from "next/image"
+interface Props {
+    track:any
+}
 
-const TrackItem = () => {
+const TrackItem = (props: Props) => {
+    const { track } = props
+
+    const {idTrackPlay} = useQueuebarContext()
+
     return (
         <>
             <div className={`flex items-center gap-4 mt-4 cursor-pointer`} >
                 <div className="relative rounded-[20px] overflow-hidden">
                     <Image
-                        src="/danhdoi.png"
+                         src={`https://res.cloudinary.com/moment-images/${track.image_file}`}
                         alt="Obito"
                         width={64}
                         height={64}
@@ -16,8 +24,8 @@ const TrackItem = () => {
                     />
                 </div>
                 <div>
-                    <p className="text-[16px] font-semibold">Cụp cái pha xuống</p>
-                    <p className="text-gray-400 text-[16px]">Dương Lê no 1</p>
+                    <p className={`text-[16px] font-semibold ${idTrackPlay === track.id && `text-[#00c853]`}`}>{track.title}</p>
+                    <p className="text-gray-400 text-[16px]">{track?.artists?.map((artist: any) => artist.artist.name).join(", ")}</p>
                 </div>
             </div>
         </>

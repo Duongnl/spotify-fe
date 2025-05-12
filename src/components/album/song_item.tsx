@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image"
-import { Play, Heart, Plus, Pause, Delete } from "lucide-react"
+import { Play, Heart, Plus, Pause, Delete, CircleX } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { usePlaybarContext } from "@/context/playbar-context"
 import type { MenuProps } from 'antd';
@@ -15,10 +15,11 @@ interface Props {
     track: any
     name: string
     fetchAPi?: () => void
+    setNewQueueTracks: (v:any) =>void
 }
 
 const SongItem = (props: Props) => {
-    const { track, name, fetchAPi } = props
+    const { track, name, fetchAPi, setNewQueueTracks } = props
 
     const { currentAudioPlaying, setCurrentAudioPlaying, audioRef, isPlaying, setIsPlaying, playMusic,
     } = usePlaybarContext();
@@ -27,6 +28,8 @@ const SongItem = (props: Props) => {
 
 
     const handlePlayMusic = () => {
+        setNewQueueTracks(track.track.id)
+    
         playMusic(track.track.id)
     }
 
@@ -180,7 +183,7 @@ const SongItem = (props: Props) => {
                             <button className="h-8 w-8 text-gray-400 opacity-0 group-hover:opacity-100"
                                 onClick={() => { handleDeletePlaylist() }}
                             >
-                                <Delete size={16} />
+                                <CircleX size={16} />
                             </button>
                         </>
                     )}
