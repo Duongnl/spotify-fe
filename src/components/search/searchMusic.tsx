@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import cookie from "js-cookie"
 import RowHomeContent from '../home/RowHomeContent'
 import SongItem from '../album/song_item'
+import { useQueuebarContext } from '@/context/queuebar-context'
 
 
 
@@ -99,6 +100,11 @@ export default function SearchPage(props: Props) {
 
   }, [])
 
+      const {fetchGetQueueTracks, setIdTrackPlay } = useQueuebarContext()
+  
+      const setNewQueueTracks = (v:any) => {
+          fetchGetQueueTracks([], v)
+      }
 
 
   return (
@@ -113,6 +119,7 @@ export default function SearchPage(props: Props) {
               <SongItem
               name='search'
               track={track}
+              setNewQueueTracks={setNewQueueTracks}
               />
               </>
             ))}
