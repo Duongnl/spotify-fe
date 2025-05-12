@@ -33,9 +33,6 @@ const PlayBar = (props: IProps) => {
     const { currentAudioPlaying, isPlaying, playMusic, artistName, trackName, img, currentTime, duration, audioRef, setCurrentTime, idPlaybar, videoUrl, setIsSeeking, isSeeking } = usePlaybarContext();
 
     const handlePlayMusic = async () => {
-
-
-
         playMusic(currentAudioPlaying)
     }
     const { isQueueBarOpen, setIsQueueBarOpen } = props

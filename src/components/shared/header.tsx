@@ -3,10 +3,11 @@ import { useScreenSize } from '@/utils/resize';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Space } from 'antd';
 import React, { useState, useEffect, useRef } from "react"; // Import React and useRef
-import { GalleryHorizontalEnd, MoveRight, Plus } from "lucide-react"
+import { GalleryHorizontalEnd, MessageCircleMore, MoveRight, Plus } from "lucide-react"
 import { redirect, usePathname, useRouter } from "next/navigation"; // Import useRouter
 import API from '@/api/api';
 import cookie from "js-cookie"
+import ChatBot from '../AIChat/chatbot';
 
 
 
@@ -25,7 +26,7 @@ const Header = (props: IProps) => {
     const [isSearchDesktopOpen, setIsSearchDesktopOpen] = useState(false);
     const [isSearchMobileOpen, setIsSearchMobileOpen] = useState(false);
     // const [search, setSearch] = useState<string>("") // `search` state seems unused, can be removed or used if needed elsewhere
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter(); // Initialize useRouter
     const isSmallScreen = useScreenSize("(max-width: 587px)");
@@ -37,37 +38,41 @@ const Header = (props: IProps) => {
     const [showDropdown, setShowDropdown] = useState(false);
     // Ref cho container tìm kiếm
     const searchContainerRef = useRef<HTMLDivElement>(null); // Specify type for ref
+    const [isChatBotOpen, setIsChatBotOpen] = useState(false);
 
-  const [mockData, setMockData] = useState([
-    { type: 'song', name: 'Tell the kids i love them', artist: 'Obito, Shiki' },
-    { type: 'song', name: 'Timeless', artist: 'The Weeknd, Playboi Carti' },
-    { type: 'song', name: 'PHONG ZIN ZIN', artist: 'tlinh, Low G' },
-    { type: 'song', name: 'Tell Ur Mom II', artist: 'Winno, Hustlang Heily' },
-    { type: 'song', name: 'Tell Ur Mom I', artist: 'Winno, Hustlang Heily' },
-    { type: 'song', name: 'Fifth Song', artist: 'Fifth Artist' }, // Added more mock data
-    { type: 'song', name: 'Sixth Song', artist: 'Sixth Artist' },
-    { type: 'song', name: 'Seventh Song', artist: 'Seventh Artist' },
-  ])
+    const handleOpenChatBot = () => {
+        setIsChatBotOpen(!isChatBotOpen);
+    };
+    const [mockData, setMockData] = useState([
+        { type: 'song', name: 'Tell the kids i love them', artist: 'Obito, Shiki' },
+        { type: 'song', name: 'Timeless', artist: 'The Weeknd, Playboi Carti' },
+        { type: 'song', name: 'PHONG ZIN ZIN', artist: 'tlinh, Low G' },
+        { type: 'song', name: 'Tell Ur Mom II', artist: 'Winno, Hustlang Heily' },
+        { type: 'song', name: 'Tell Ur Mom I', artist: 'Winno, Hustlang Heily' },
+        { type: 'song', name: 'Fifth Song', artist: 'Fifth Artist' }, // Added more mock data
+        { type: 'song', name: 'Sixth Song', artist: 'Sixth Artist' },
+        { type: 'song', name: 'Seventh Song', artist: 'Seventh Artist' },
+    ])
 
 
     useEffect(() => {
-    const fetchapi = async () => {
-        const resTracks = await fetch(API.TRACK.GET_TRACKS, {
-            method: "GET", // Đúng phương thức POST
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json", // Đặt Content-Type là JSON
-                Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
-            },
-        });
-        // const dataTracks = await resTracks.json();
-        // console.log("dataa >>> ", dataTracks)
+        const fetchapi = async () => {
+            const resTracks = await fetch(API.TRACK.GET_TRACKS, {
+                method: "GET", // Đúng phương thức POST
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json", // Đặt Content-Type là JSON
+                    Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+                },
+            });
+            // const dataTracks = await resTracks.json();
+            // console.log("dataa >>> ", dataTracks)
 
-          const { data } = await resTracks.json();
+            const { data } = await resTracks.json();
 
-            const formattedData = data.map((track:any) => {
+            const formattedData = data.map((track: any) => {
                 const artistNames = track.artists
-                    .map((artistData:any) => artistData.artist.name)
+                    .map((artistData: any) => artistData.artist.name)
                     .join(", ");
 
                 return {
@@ -78,9 +83,9 @@ const Header = (props: IProps) => {
             });
 
             setMockData(formattedData);
-    }
-    fetchapi()
-}, [])
+        }
+        fetchapi()
+    }, [])
 
     // Effect để xử lý tìm kiếm/lọc khi query thay đổi
     useEffect(() => {
@@ -200,6 +205,10 @@ const Header = (props: IProps) => {
         router.push(`/`)
     }
 
+    const handleShowChatBot = () => {
+        setIsModalOpen(true)
+    }
+
 
     return (
         <>
@@ -314,6 +323,13 @@ const Header = (props: IProps) => {
 
                 {/* === Right Section (Notifications, User Dropdown) === */}
                 <div className="flex items-center div-user-noti">
+                    <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'
+                        onClick={() => { handleOpenChatBot() }}
+                    >
+                        <MessageCircleMore />
+                    </button>
+
+
                     <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'>
                         <i className=" text-[25px] fa-solid fa-bell"></i>
                     </button>
@@ -354,6 +370,14 @@ const Header = (props: IProps) => {
                     </div>
                 )
             }
+            {isChatBotOpen && (
+                <ChatBot
+                    // ... các props khác nếu có ...
+                    onClose={() => setIsChatBotOpen(false)}
+                />
+            )}
+
+
 
         </>
     );
