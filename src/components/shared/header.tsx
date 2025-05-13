@@ -9,7 +9,7 @@ import API from '@/api/api';
 import cookie from "js-cookie"
 import Link from 'next/link';
 import { useUserContext } from '@/context/user-context';
-import Image from 'next/image';import ChatBot from '../AIChat/chatbot';
+import Image from 'next/image'; import ChatBot from '../AIChat/chatbot';
 
 
 
@@ -28,8 +28,8 @@ const Header = (props: IProps) => {
     const [isSearchDesktopOpen, setIsSearchDesktopOpen] = useState(false);
     const [isSearchMobileOpen, setIsSearchMobileOpen] = useState(false);
     // const [search, setSearch] = useState<string>("") // `search` state seems unused, can be removed or used if needed elsewhere
-    const { user } = useUserContext()   
-     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { user } = useUserContext()
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter(); // Initialize useRouter
     const isSmallScreen = useScreenSize("(max-width: 587px)");
@@ -236,12 +236,13 @@ const Header = (props: IProps) => {
                     <i className="fa-brands fa-spotify ml-5 text-[35px]"></i>
 
                     {/* Home Button */}
-                    <button className="rounded-full bg-[#1f1f1f] ml-5 text-[25px] h-full w-[48px]"
-                        onClick={() => { linkHome() }}
-                    >
-                        <i className="fa-solid fa-house"></i>
-                    </button>
-
+                    <Link href={"/"}>
+                        <button className="rounded-full bg-[#1f1f1f] ml-5 text-[25px] h-full w-[48px]"
+                            // onClick={() => { linkHome() }}
+                        >
+                            <i className="fa-solid fa-house"></i>
+                        </button>
+                    </Link>
 
                     {/* Desktop Search Input + Dropdown */}
                     {

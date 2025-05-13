@@ -14,6 +14,7 @@ import { SidebarProvider } from "@/context/sidebar-context";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { QueuebarProvider } from "@/context/queuebar-context";
+import NextTopLoader from "nextjs-toploader";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -52,6 +53,19 @@ export default function RootLayout({
       >
 
         <body>
+          <header>
+            <NextTopLoader
+              color="#00c853"
+              initialPosition={0.08}
+              crawlSpeed={50}
+              height={3}
+              crawl={true}
+              easing="ease"
+              speed={50}
+              zIndex={1600}
+              showAtBottom={false}
+            />
+          </header>
 
           <AntdRegistry>
             <UserProvider>
@@ -60,6 +74,7 @@ export default function RootLayout({
                   <SidebarProvider>
                     <MainLayout>
                       {children}
+
                       <ToastContainer
                         position="bottom-center"
                         autoClose={1200}
