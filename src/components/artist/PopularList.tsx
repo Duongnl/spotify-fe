@@ -137,8 +137,6 @@ export default function PopularTracksList(props: PopularTracksListProps) {
     fetchGetQueueTracks(dataTracks, v)
   }
 
-  console.log("PopularTracksList data: ", data);
-
   return (
     <div className="bg-black text-white p-6">
       <h2 className="text-2xl font-bold mb-4">Popular</h2>

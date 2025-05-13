@@ -118,11 +118,13 @@ export default function MediaControls(props: TrackMediaProps) {
         placement="bottomCenter"
         trigger={['click']}
         overlayClassName="user-dropdown"
+        className=" cursor-pointer"
 
       >
+        <Plus ></Plus>
       </Dropdown>
 
-
+{/* 
       <button
         className="flex items-center justify-center w-10 h-10 bg-transparent text-gray-400 hover:text-white transition-colors"
         aria-label="More options"
@@ -133,7 +135,7 @@ export default function MediaControls(props: TrackMediaProps) {
           fill={isClicked ? 'red' : 'none'} // Điền màu đỏ khi click, nếu không thì không điền
           stroke={isClicked ? 'red' : 'currentColor'} // Đổi màu viền nếu cần
         />
-      </button>
+      </button> */}
 {/* 
       <button
         className="flex items-center justify-center w-10 h-10 bg-transparent text-gray-400 hover:text-white transition-colors"

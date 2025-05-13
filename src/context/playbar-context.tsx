@@ -239,30 +239,63 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchSaveCurrentTime = async (id: any, currTime: any) => {
 
-    const dataRes = {
-      track_id: id,
-      currentTime: Math.floor(currTime),
-    }
+    if (user.playbar === null) {
 
-    const res = await fetch(`${API.PLAYBAR.UPDATE}${idPlaybar}/`, {
-      method: "PUT", // Đúng phương thức PUT
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json", // Đặt Content-Type là JSON
-        Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
-      },
-      body: JSON.stringify(dataRes), // Gửi dữ liệu JSON
-    });
-    const data = await res.json();
-    if (data && data.status === 200) {
-      if (user.playbar && user.playbar.id) {
-        // Nếu user.playbar và user.playbar.id tồn tại
-        console.log(user.playbar.id);
-      } else {
-          
+      const dataRes = {
+        track_id: id,
+        currentTime: Math.floor(currTime),
+        "is_repeat": false
       }
 
+      const resp = await fetch(`${API.PLAYBAR.UPDATE}`, {
+        method: "POST", // Đúng phương thức PUT
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json", // Đặt Content-Type là JSON
+          Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+        },
+        body: JSON.stringify(dataRes), // Gửi dữ liệu JSON
+      });
+      const data = await resp.json();
+      if (data && data.status === 200) {
+
+        const req = {
+          playbar_id: data.data.id
+        }
+        const res = await fetch(`${API.USER.UPDATE_PLAYBAR_ID}${user.id}/`, {
+          method: "POST", // Đúng phương thức PUT
+          headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json", // Đặt Content-Type là JSON
+            Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+          },
+          body: JSON.stringify(req), // Gửi dữ liệu JSON
+        });
+        const data1 = await res.json();
+        if (data1 && data1.status === 200)  {
+         await  fetchGetUser()
+        }
+      }
+
+    } else {
+      const dataRes = {
+        track_id: id,
+        currentTime: Math.floor(currTime),
+      }
+
+      const res1 = await fetch(`${API.PLAYBAR.UPDATE}${idPlaybar}/`, {
+        method: "PUT", // Đúng phương thức PUT
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json", // Đặt Content-Type là JSON
+          Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+        },
+        body: JSON.stringify(dataRes), // Gửi dữ liệu JSON
+      });
+      const data = await res1.json();
     }
+
+
 
   }
 

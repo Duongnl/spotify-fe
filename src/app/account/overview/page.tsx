@@ -20,6 +20,9 @@ import { Input } from "antd"
 import { Button } from "antd/es/radio"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import cookie from "js-cookie"
+import { useQueuebarContext } from "@/context/queuebar-context"
+import { usePlaybarContext } from "@/context/playbar-context"
 export default function SpotifySettings() {
   const router = useRouter();
   const changeLink = () => {
@@ -27,6 +30,18 @@ export default function SpotifySettings() {
     router.push("/account/profile")
 
   }
+
+  const {fetchGetQueueTracks} = useQueuebarContext()
+  const {setCurrentAudioPlaying} = usePlaybarContext()
+
+  const handleLogout = () => {
+    setCurrentAudioPlaying("")
+    fetchGetQueueTracks([],"")
+    cookie.remove("session-id");
+    router.push("/login")
+
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-3xl p-4">
@@ -60,10 +75,10 @@ export default function SpotifySettings() {
         <div className="mb-6 rounded-md bg-neutral-800 p-4">
           <h3 className="mb-4 text-lg font-bold">Tài khoản</h3>
           <ul className="space-y-1"
-          
+
           >
             <li
-             
+
             >
               <Link href={"/account/profile"} className="flex w-full items-center justify-between rounded-md p-3 hover:bg-neutral-700">
                 <div className="flex items-center">
@@ -74,7 +89,9 @@ export default function SpotifySettings() {
               </Link>
             </li>
             <li>
-              <button className="flex w-full items-center justify-between rounded-md p-3 hover:bg-neutral-700">
+              <button className="flex w-full items-center justify-between rounded-md p-3 hover:bg-neutral-700"
+              onClick={() => {handleLogout()}}
+              >
                 <div className="flex items-center">
                   <LogOut className="mr-3 h-5 w-5 text-neutral-400" />
                   <span>Đăng xuất</span>

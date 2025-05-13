@@ -64,8 +64,8 @@ export default function LoginForm() {
       const res = await LoginServerActions(loginRequest);
 
       if (res && res.status === 200) {
-        router.push('/');
         await fetchGetUser()
+        router.push('/');
       } else {
         setErrors({ email: 'Đăng nhập thất bại, kiểm tra lại thông tin' });
       }

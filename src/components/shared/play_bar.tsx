@@ -186,6 +186,7 @@ const PlayBar = (props: IProps) => {
         setQueueTracks(shuffled);
     }
 
+    
 
     return (
         <>
