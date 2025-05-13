@@ -47,8 +47,8 @@ export default function RootLayout({
 
           <AntdRegistry>
             <UserProvider>
-              <PlaybarProvider>
-                <QueuebarProvider>
+              <QueuebarProvider>
+                <PlaybarProvider>
                   <SidebarProvider>
                     <MainLayout>
                       {children}
@@ -66,8 +66,8 @@ export default function RootLayout({
                       />
                     </MainLayout>
                   </SidebarProvider>
-                </QueuebarProvider>
-              </PlaybarProvider>
+                </PlaybarProvider>
+              </QueuebarProvider>
             </UserProvider>
           </AntdRegistry>
 

@@ -50,7 +50,7 @@ export default function SearchPage(props: Props) {
 
     for (let i = 0; i < artistsByTrack.length; i++) {
       const item: RowHomeResponse = {
-        link: '/album/',
+        link: '/artist/',
         id: artistsByTrack[i].id,
         img: artistsByTrack[i].image_file,
         title1: "",

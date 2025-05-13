@@ -8,6 +8,7 @@ import { useUserContext } from "@/context/user-context"
 import API from "@/api/api"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useQueuebarContext } from "@/context/queuebar-context"
 interface IProps {
     isSidebarOpen: boolean,
     isSideBarMobile: boolean,
@@ -21,6 +22,8 @@ const Sidebar = (props: IProps) => {
     const { user, fetchGetUser } = useUserContext();
     const { isSidebarOpen, setIsSidebarOpen, isSideBarMobile } = props
     const router = useRouter()
+
+
 
     const handleSetIsSidebarOpen = () => {
         if (!isSideBarMobile) {
