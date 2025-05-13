@@ -9,6 +9,7 @@ import API from '@/api/api';
 import cookie from "js-cookie"
 import Link from 'next/link';
 import { useUserContext } from '@/context/user-context';
+import Image from 'next/image';
 
 
 interface IProps {
@@ -26,7 +27,7 @@ const Header = (props: IProps) => {
     const [isSearchDesktopOpen, setIsSearchDesktopOpen] = useState(false);
     const [isSearchMobileOpen, setIsSearchMobileOpen] = useState(false);
     // const [search, setSearch] = useState<string>("") // `search` state seems unused, can be removed or used if needed elsewhere
-    const {user}= useUserContext()
+    const { user } = useUserContext()
     const pathname = usePathname();
     const router = useRouter(); // Initialize useRouter
     const isSmallScreen = useScreenSize("(max-width: 587px)");
@@ -39,36 +40,36 @@ const Header = (props: IProps) => {
     // Ref cho container tìm kiếm
     const searchContainerRef = useRef<HTMLDivElement>(null); // Specify type for ref
 
-  const [mockData, setMockData] = useState([
-    { type: 'song', name: 'Tell the kids i love them', artist: 'Obito, Shiki' },
-    { type: 'song', name: 'Timeless', artist: 'The Weeknd, Playboi Carti' },
-    { type: 'song', name: 'PHONG ZIN ZIN', artist: 'tlinh, Low G' },
-    { type: 'song', name: 'Tell Ur Mom II', artist: 'Winno, Hustlang Heily' },
-    { type: 'song', name: 'Tell Ur Mom I', artist: 'Winno, Hustlang Heily' },
-    { type: 'song', name: 'Fifth Song', artist: 'Fifth Artist' }, // Added more mock data
-    { type: 'song', name: 'Sixth Song', artist: 'Sixth Artist' },
-    { type: 'song', name: 'Seventh Song', artist: 'Seventh Artist' },
-  ])
+    const [mockData, setMockData] = useState([
+        { type: 'song', name: 'Tell the kids i love them', artist: 'Obito, Shiki' },
+        { type: 'song', name: 'Timeless', artist: 'The Weeknd, Playboi Carti' },
+        { type: 'song', name: 'PHONG ZIN ZIN', artist: 'tlinh, Low G' },
+        { type: 'song', name: 'Tell Ur Mom II', artist: 'Winno, Hustlang Heily' },
+        { type: 'song', name: 'Tell Ur Mom I', artist: 'Winno, Hustlang Heily' },
+        { type: 'song', name: 'Fifth Song', artist: 'Fifth Artist' }, // Added more mock data
+        { type: 'song', name: 'Sixth Song', artist: 'Sixth Artist' },
+        { type: 'song', name: 'Seventh Song', artist: 'Seventh Artist' },
+    ])
 
 
     useEffect(() => {
-    const fetchapi = async () => {
-        const resTracks = await fetch(API.TRACK.GET_TRACKS, {
-            method: "GET", // Đúng phương thức POST
-            headers: {
-                Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json", // Đặt Content-Type là JSON
-                Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
-            },
-        });
-        // const dataTracks = await resTracks.json();
-        // console.log("dataa >>> ", dataTracks)
+        const fetchapi = async () => {
+            const resTracks = await fetch(API.TRACK.GET_TRACKS, {
+                method: "GET", // Đúng phương thức POST
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json", // Đặt Content-Type là JSON
+                    Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+                },
+            });
+            // const dataTracks = await resTracks.json();
+            // console.log("dataa >>> ", dataTracks)
 
-          const { data } = await resTracks.json();
+            const { data } = await resTracks.json();
 
-            const formattedData = data.map((track:any) => {
+            const formattedData = data.map((track: any) => {
                 const artistNames = track.artists
-                    .map((artistData:any) => artistData.artist.name)
+                    .map((artistData: any) => artistData.artist.name)
                     .join(", ");
 
                 return {
@@ -79,9 +80,9 @@ const Header = (props: IProps) => {
             });
 
             setMockData(formattedData);
-    }
-    fetchapi()
-}, [])
+        }
+        fetchapi()
+    }, [])
 
     // Effect để xử lý tìm kiếm/lọc khi query thay đổi
     useEffect(() => {
@@ -182,7 +183,7 @@ const Header = (props: IProps) => {
         {
             key: '1',
             label: (
-                <Link  rel="noopener noreferrer" href={"/account/overview"}>
+                <Link rel="noopener noreferrer" href={"/account/overview"}>
                     Tài khoản
                 </Link>
             ),
@@ -190,7 +191,7 @@ const Header = (props: IProps) => {
         {
             key: '2',
             label: (
-                <Link  rel="noopener noreferrer" href={`/user/${user?.id}`}>
+                <Link rel="noopener noreferrer" href={`/user/${user?.id}`}>
                     Hồ sơ
                 </Link>
             ),
@@ -315,17 +316,35 @@ const Header = (props: IProps) => {
 
                 {/* === Right Section (Notifications, User Dropdown) === */}
                 <div className="flex items-center div-user-noti">
-                    <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'>
+                    {/* <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'>
                         <i className=" text-[25px] fa-solid fa-bell"></i>
-                    </button>
+                    </button> */}
 
                     <Dropdown menu={{ items }}
                         placement="bottomRight"
                         trigger={['click']}
                         overlayClassName="user-dropdown"
                     >
-                        <button className='w-[40px] h-[40px]' >
-                            <img src="/images/avatar.jpg" className='w-[40px] h-[40px] rounded-full ' alt="" />
+                        <button className='w-[40px] h-[40px] ' >
+                            {/* <img src="/images/avatar.jpg" className='w-[40px] h-[40px] rounded-full ' alt="" /> */}
+                            {user?.imageUrl === null ? (<>
+
+                                <img
+                                    src={`https://res.cloudinary.com/moment-images/1_2_r15hh3`}
+                                    alt="Album cover"
+                                    className='w-[40px] h-[40px] rounded-full object-cover'
+                                />
+                            </>) : (
+                                <>
+                                    <img
+                                        src={`https://res.cloudinary.com/moment-images/${user?.imageUrl}`}
+                                        alt="Album cover"
+                                        className='w-[40px] h-[40px] rounded-full object-cover'
+                                    />
+                                </>
+                            )}
+
+
                         </button>
                     </Dropdown>
 

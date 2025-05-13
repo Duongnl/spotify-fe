@@ -11,7 +11,7 @@ type QueuebarContextType = {
     fetchGetQueueTracks: (v: any, id: any) => void
     setIdList: (v: any) => void
     idList: any
-    setFirtsTrack : (v: any, id: any)=> void
+    setFirtsTrack: (v: any, id: any) => void
 
 };
 
@@ -53,9 +53,24 @@ export const QueuebarProvider = ({ children }: { children: ReactNode }) => {
                     result.unshift(trackToTop); // đưa lên đầu
                 }
 
-                setQueueTracks(result);
+                const updatedResult = result.map((item: any) => {
+                    const artistName = item.artists?.map((artistObj: any) => artistObj.artist?.name) || [];
+                    return {
+                        ...item,
+                        artistName,
+                    };
+                });
+
+                setQueueTracks(updatedResult);
             } else {
-                setQueueTracks(dataTracks.data);
+                  const updatedResult = dataTracks.data.map((item: any) => {
+                    const artistName = item.artists?.map((artistObj: any) => artistObj.artist?.name) || [];
+                    return {
+                        ...item,
+                        artistName,
+                    };
+                });
+                setQueueTracks(updatedResult);
             }
         }
     }
@@ -82,7 +97,7 @@ export const QueuebarProvider = ({ children }: { children: ReactNode }) => {
             setQueueTracks,
             queueTracks,
             fetchGetQueueTracks,
-          setFirtsTrack,
+            setFirtsTrack,
             setIdList,
             idList
         }}>

@@ -35,7 +35,7 @@ const TrackItem = (props: Props) => {
                 </div>
                 <div>
                     <p className={`text-[16px] font-semibold ${currentAudioPlaying === track.id && `text-[#00c853]`}`}>{track.title}</p>
-                    <p className="text-gray-400 text-[16px]">{track?.artists?.map((artist: any) => artist.artist.name).join(", ")}</p>
+                    <p className="text-gray-400 text-[16px]">{track.artistName.join(', ')}</p>
                 </div>
             </div>
         </>

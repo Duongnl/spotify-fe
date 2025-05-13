@@ -65,7 +65,7 @@ export const PlaybarProvider = ({ children }: { children: ReactNode }) => {
     if (user?.playbar?.track) {
       setCurrentAudioPlaying(user.playbar.track.id);
       setTrackName(user.playbar.track.title);
-      setArtistName(user.playbar.track.title); // hoặc dữ liệu khác tùy bạn
+      setArtistName(user.playbar.track.artistName.join(', ')); // hoặc dữ liệu khác tùy bạn
       setImg(user.playbar.track.image_file);
       setDuration(user.playbar.track.duration)
       setIdPlaybar(user.playbar.id)

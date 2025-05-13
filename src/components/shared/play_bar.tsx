@@ -176,17 +176,22 @@ const PlayBar = (props: IProps) => {
     }
 
     const handleRandom = () => {
-        const shuffled = [...queueTracks]; // Tạo bản sao để không mutate array gốc
+        if (!currentAudioPlaying) return;
 
-        for (let i = shuffled.length - 1; i > 0; i--) {
+        const currentTrack = queueTracks.find((track: any) => track.id === currentAudioPlaying);
+        const otherTracks = queueTracks.filter((track: any) => track.id !== currentAudioPlaying);
+
+        for (let i = otherTracks.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            [otherTracks[i], otherTracks[j]] = [otherTracks[j], otherTracks[i]];
         }
 
+        const shuffled = currentTrack ? [currentTrack, ...otherTracks] : otherTracks;
         setQueueTracks(shuffled);
-    }
+    };
 
-    
+
+
 
     return (
         <>
@@ -327,9 +332,9 @@ const PlayBar = (props: IProps) => {
                                         onClick={() => { handleQueueBar() }}
                                     />
                                 </button>
-                                <button className="text-gray-400 hover:text-white">
+                                {/* <button className="text-gray-400 hover:text-white">
                                     <Pencil size={18} />
-                                </button>
+                                </button> */}
                                 <button
                                     className="text-gray-400 hover:text-white"
                                     onClick={() => openVideo()}
@@ -350,9 +355,9 @@ const PlayBar = (props: IProps) => {
                                 </div>
 
                                 {/* <Slider defaultValue={[75]} max={100} step={1} className="w-24" /> */}
-                                <button className={`text-gray-400 hover:text-white `}>
+                                {/* <button className={`text-gray-400 hover:text-white `}>
                                     <Maximize2 size={18} />
-                                </button>
+                                </button> */}
                             </div>
                         </>
                     )
