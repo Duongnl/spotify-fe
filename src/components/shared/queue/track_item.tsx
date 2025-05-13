@@ -10,13 +10,10 @@ interface Props {
 const TrackItem = (props: Props) => {
     const { track } = props
 
-    const {idTrackPlay, setIdList} = useQueuebarContext()
-    const {playMusic} = usePlaybarContext()
-    const {setIdTrackPlay} = useQueuebarContext()
+    const {setIdList} = useQueuebarContext()
+    const {playMusic, currentAudioPlaying} = usePlaybarContext()
 
     const handlePlay = () => {
-        setIdList("")
-        setIdTrackPlay(track.id)
         playMusic(track.id)
     }
 
@@ -37,7 +34,7 @@ const TrackItem = (props: Props) => {
                     />
                 </div>
                 <div>
-                    <p className={`text-[16px] font-semibold ${idTrackPlay === track.id && `text-[#00c853]`}`}>{track.title}</p>
+                    <p className={`text-[16px] font-semibold ${currentAudioPlaying === track.id && `text-[#00c853]`}`}>{track.title}</p>
                     <p className="text-gray-400 text-[16px]">{track?.artists?.map((artist: any) => artist.artist.name).join(", ")}</p>
                 </div>
             </div>

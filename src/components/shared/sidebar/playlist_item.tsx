@@ -1,4 +1,5 @@
 "use client"
+import { useQueuebarContext } from "@/context/queuebar-context"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
@@ -11,6 +12,7 @@ interface IProps {
 const PlaylistItem = (props: IProps) => {
     const { isSidebarOpen, playlist, user } = props
     const router = useRouter()
+        const {idList} = useQueuebarContext()
     const link = () => {
         router.push(`/playlist/${playlist.id}`)
     }
@@ -33,7 +35,7 @@ const PlaylistItem = (props: IProps) => {
                     isSidebarOpen && (
                         <>
                             <div>
-                                <p className="text-[16px] font-semibold">{playlist.name}</p>
+                                <p className={`text-[16px] font-semibold ${idList === playlist.id && `text-[#00c853]`}`}>{playlist.name}</p>
                                 <p className="text-gray-400 text-[16px]">{user.name}</p>
                             </div>
                         </>

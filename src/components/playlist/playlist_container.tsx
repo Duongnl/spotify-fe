@@ -35,14 +35,15 @@ const PlaylistContainer = (props: Props) => {
         fetchAPi()
     }, [params])
 
-    const { setQueueTracks, fetchGetQueueTracks, setIdTrackPlay, setIdList, idList } = useQueuebarContext()
+    const { setQueueTracks, fetchGetQueueTracks, setIdList, idList , setFirtsTrack} = useQueuebarContext()
 
     //    const { fetchGetQueueTracks, setIdTrackPlay, setIdList, idList } = useQueuebarContext()
     const { playMusic, isPlaying, currentAudioPlaying } = usePlaybarContext()
 
     const setNewQueueTracks = (v: any, play?: any) => {
-        if (play) {
+        if (play && v !== currentAudioPlaying) {
             playMusic(v)
+            console.log("play ne >>>>>>")
         }
 
         let dataTracks = []
@@ -51,7 +52,11 @@ const PlaylistContainer = (props: Props) => {
             dataTracks.push(res.data.tracks[i].track)
         }
         // setIdTrackPlay(v)
-        fetchGetQueueTracks(dataTracks, v)
+        // if (play ) {
+            setFirtsTrack (dataTracks, v)
+        // } else {
+        //     fetchGetQueueTracks(dataTracks, v)
+        // }
         setIdList(res.data.id)
     }
 
@@ -72,6 +77,17 @@ const PlaylistContainer = (props: Props) => {
 
     const handleEditPlaylist = () => {
         setIsModalOpen(true)
+    }
+
+        const checkTrackInPlaylist= () => {
+         for (let i = 0; i < res.data.tracks.length; i++) {
+
+               if (res.data.tracks[i].track. id === currentAudioPlaying) {
+                return true;
+               }
+            }
+
+            return false
     }
 
     return (

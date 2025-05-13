@@ -37,22 +37,35 @@ const AlbumTitle = (props: Props) => {
 
     }, [])
 
-    const { fetchGetQueueTracks, setIdTrackPlay, setIdList, idList } = useQueuebarContext()
+    const { fetchGetQueueTracks, setIdList, idList,setFirtsTrack } = useQueuebarContext()
     const { playMusic, isPlaying, currentAudioPlaying } = usePlaybarContext()
 
-    const setNewQueueTracks = (v: any, play?: any) => {
-        if (play) {
-            playMusic(v)
-        }
+    const setNewQueueTracks = (v: any, play?:any) => {
 
-        let dataTracks: any = []
-        for (let i = 0; i < res.data.tracks.length; i++) {
+            if (play) {
+                playMusic(v)
+            }
 
-            dataTracks.push(res.data.tracks[i].track)
-        }
+            let dataTracks: any = []
 
-        fetchGetQueueTracks(dataTracks, v)
-        setIdList(res.data.id)
+            for (let i = 0; i < res.data.tracks.length; i++) {
+
+                dataTracks.push(res.data.tracks[i].track)
+            }
+
+            setFirtsTrack (dataTracks, v)
+            setIdList("")
+    }
+
+    const checkTrackInAlbum = () => {
+         for (let i = 0; i < res.data.tracks.length; i++) {
+
+               if (res.data.tracks[i].track. id === currentAudioPlaying) {
+                return true;
+               }
+            }
+
+            return false
     }
 
 
@@ -106,11 +119,11 @@ const AlbumTitle = (props: Props) => {
                 </div>
             </div>
             <div className="flex items-center gap-4 p-6 bg-[#0e0e0e] w-full">
-                {!(isPlaying && idList === res.data.id)  ? (<>
+                {!(isPlaying && checkTrackInAlbum()) ? (<>
                     <button
                         className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
                         aria-label="Play"
-                        onClick={() => { setNewQueueTracks(res.data.tracks[0].track.id, 'playAll') }}
+                        onClick={() => { setNewQueueTracks(res.data.tracks[0].track.id, "playAll") }}
                     >
                         <Play className="w-7 h-7 fill-current" />
                     </button>
@@ -118,7 +131,7 @@ const AlbumTitle = (props: Props) => {
                     <button
                         className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
                         aria-label="Play"
-                        onClick={() => {   playMusic(currentAudioPlaying) }}
+                        onClick={() => { playMusic(currentAudioPlaying) }}
                     >
                         <Pause className="w-7 h-7 fill-current" />
                     </button>

@@ -19,17 +19,7 @@ export default function MediaControls(props: TrackMediaProps) {
   const { currentAudioPlaying, isPlaying, playMusic,
   } = usePlaybarContext();
 
-  // const handleTogglePlay = () => {
-  //   const audio = audioRef.current;
-  //   if (!audio) return;
-
-  //   if (isPlaying) {
-  //     audio.pause();
-  //   } else {
-  //     audio.play();
-  //   }
-  // };
-  const {setIdTrackPlay, fetchGetQueueTracks} = useQueuebarContext()
+  const { fetchGetQueueTracks, setIdList} = useQueuebarContext()
 
 
   const { playlists } = useSidebarContext();
@@ -53,8 +43,8 @@ export default function MediaControls(props: TrackMediaProps) {
 
 
   const handlePlayMusic = () => {
-  
     fetchGetQueueTracks([],data.data.id)
+    setIdList("")
     playMusic(data.data.id)
   }
 

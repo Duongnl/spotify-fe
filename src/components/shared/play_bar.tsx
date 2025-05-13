@@ -16,6 +16,8 @@ import {
     Pencil,
     MonitorSmartphone,
     ListMusic,
+    Repeat,
+    Shuffle,
 } from "lucide-react"
 import { useScreenSize } from "@/utils/resize";
 import { Plus, Heart } from "lucide-react"
@@ -23,6 +25,9 @@ import { usePlaybarContext } from "@/context/playbar-context";
 import { useRouter } from "next/navigation";
 import cookie from "js-cookie"
 import VideoMiniplayer from "@/components/shared/video/VideoMiniplayer";
+import { useQueuebarContext } from "@/context/queuebar-context";
+import API from "@/api/api";
+import { getNextTrackId, getPreviousTrackId } from "@/utils/get_id_track";
 interface IProps {
     isQueueBarOpen: boolean,
     setIsQueueBarOpen: (v: boolean) => void
@@ -30,11 +35,12 @@ interface IProps {
 }
 
 const PlayBar = (props: IProps) => {
-    const { currentAudioPlaying, isPlaying, playMusic, artistName, trackName, img, currentTime, duration, audioRef, setCurrentTime, idPlaybar, videoUrl, setIsSeeking, isSeeking } = usePlaybarContext();
+    const { currentAudioPlaying, isPlaying, playMusic, artistName, trackName, img, currentTime, duration, audioRef, setCurrentTime,
+        idPlaybar, videoUrl, setIsSeeking, isSeeking, repeatRef
+
+    } = usePlaybarContext();
 
     const handlePlayMusic = async () => {
-
-
 
         playMusic(currentAudioPlaying)
     }
@@ -109,6 +115,78 @@ const PlayBar = (props: IProps) => {
     }, []);
 
 
+    const { queueTracks, setIdList, setQueueTracks } = useQueuebarContext()
+    const [isChangingTrack, setIsChangingTrack] = useState(false);
+
+
+
+
+
+
+    const handleNextTrack = async () => {
+        if (isChangingTrack) return; // Chặn nếu đang xử lý
+        setIsChangingTrack(true);
+
+        try {
+            const id = getNextTrackId(currentAudioPlaying, queueTracks);
+            if (id) {
+                await playMusic(id);
+            }
+        } catch (error) {
+            console.error("Error in handleNextTrack:", error);
+        } finally {
+            setIsChangingTrack(false); // Cho phép bấm tiếp
+        }
+    };
+
+    const handleBackTrack = async () => {
+        if (isChangingTrack) return;
+        setIsChangingTrack(true);
+
+        try {
+            const id = getPreviousTrackId(currentAudioPlaying, queueTracks);
+            if (id) {
+                await playMusic(id);
+            }
+        } catch (error) {
+            console.error("Error in handleBackTrack:", error);
+        } finally {
+            setIsChangingTrack(false);
+        }
+    };
+
+    const handleRepeat = async () => {
+
+        repeatRef.current = !repeatRef.current
+        const dataRes = {
+            is_repeat: repeatRef.current
+        }
+        console.log("repeatDataRes >>> ", dataRes)
+
+        const res = await fetch(`${API.PLAYBAR.UPDATE}${idPlaybar}/`, {
+            method: "PUT", // Đúng phương thức PUT
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json", // Đặt Content-Type là JSON
+                Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+            },
+            body: JSON.stringify(dataRes), // Gửi dữ liệu JSON
+        });
+        const data = await res.json();
+    }
+
+    const handleRandom = () => {
+        const shuffled = [...queueTracks]; // Tạo bản sao để không mutate array gốc
+
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        setQueueTracks(shuffled);
+    }
+
+
     return (
         <>
             <div className="flex justify-between  p-2 w-full">
@@ -165,7 +243,15 @@ const PlayBar = (props: IProps) => {
                             <div className="flex flex-col justify-around items-center flex-grow" >
 
                                 <div className="flex items-center space-x-3">
-                                    <button className="text-gray-400 hover:text-white">
+                                    <button className="text-gray-400 hover:text-white"
+                                        onClick={() => { handleRandom() }}
+                                    >
+                                        <Shuffle size={20} />
+                                    </button>
+
+                                    <button className="text-gray-400 hover:text-white"
+                                        onClick={() => { handleBackTrack() }}
+                                    >
                                         <SkipBack size={20} />
                                     </button>
                                     {isPlaying ? (
@@ -185,8 +271,15 @@ const PlayBar = (props: IProps) => {
                                         </>
                                     )}
 
-                                    <button className="text-gray-400 hover:text-white">
+                                    <button className="text-gray-400 hover:text-white"
+                                        onClick={() => { handleNextTrack() }}
+                                    >
                                         <SkipForward size={20} />
+                                    </button>
+                                    <button className={`text-gray-400 hover:text-white ${repeatRef.current && `text-white font-bold`}`}
+                                        onClick={() => { handleRepeat() }}
+                                    >
+                                        <Repeat size={20} />
                                     </button>
                                 </div>
 
@@ -256,7 +349,7 @@ const PlayBar = (props: IProps) => {
                                 </div>
 
                                 {/* <Slider defaultValue={[75]} max={100} step={1} className="w-24" /> */}
-                                <button className="text-gray-400 hover:text-white">
+                                <button className={`text-gray-400 hover:text-white `}>
                                     <Maximize2 size={18} />
                                 </button>
                             </div>
