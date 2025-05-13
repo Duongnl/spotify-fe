@@ -18,7 +18,7 @@ export default function PublicPlaylists(props: Playlist) {
         {playlists.map((playlist:any) => (
           <Link
             key={playlist.id}
-            href={`/playlists/${playlist.id}`} // Thay # bằng đường dẫn thực tế
+            href={`/playlist/${playlist.id}`} // Thay # bằng đường dẫn thực tế
             className="group relative bg-[#181818] rounded-md p-4 hover:bg-[#282828] transition-all duration-300"
           >
             <div className="relative aspect-square mb-4 rounded-md overflow-hidden">

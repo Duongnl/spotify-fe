@@ -7,7 +7,9 @@ import { GalleryHorizontalEnd, MessageCircleMore, MoveRight, Plus } from "lucide
 import { redirect, usePathname, useRouter } from "next/navigation"; // Import useRouter
 import API from '@/api/api';
 import cookie from "js-cookie"
-import ChatBot from '../AIChat/chatbot';
+import Link from 'next/link';
+import { useUserContext } from '@/context/user-context';
+import Image from 'next/image';import ChatBot from '../AIChat/chatbot';
 
 
 
@@ -26,7 +28,8 @@ const Header = (props: IProps) => {
     const [isSearchDesktopOpen, setIsSearchDesktopOpen] = useState(false);
     const [isSearchMobileOpen, setIsSearchMobileOpen] = useState(false);
     // const [search, setSearch] = useState<string>("") // `search` state seems unused, can be removed or used if needed elsewhere
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { user } = useUserContext()   
+     const [isModalOpen, setIsModalOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter(); // Initialize useRouter
     const isSmallScreen = useScreenSize("(max-width: 587px)");
@@ -186,17 +189,17 @@ const Header = (props: IProps) => {
         {
             key: '1',
             label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                <Link rel="noopener noreferrer" href={"/account/overview"}>
                     Tài khoản
-                </a>
+                </Link>
             ),
         },
         {
             key: '2',
             label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+                <Link rel="noopener noreferrer" href={`/user/${user?.id}`}>
                     Hồ sơ
-                </a>
+                </Link>
             ),
         },
     ];
@@ -330,17 +333,35 @@ const Header = (props: IProps) => {
                     </button>
 
 
-                    <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'>
+                    {/* <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'>
                         <i className=" text-[25px] fa-solid fa-bell"></i>
-                    </button>
+                    </button>  */}
 
                     <Dropdown menu={{ items }}
                         placement="bottomRight"
                         trigger={['click']}
                         overlayClassName="user-dropdown"
                     >
-                        <button className='w-[40px] h-[40px]' >
-                            <img src="/images/avatar.jpg" className='w-[40px] h-[40px] rounded-full ' alt="" />
+                        <button className='w-[40px] h-[40px] ' >
+                            {/* <img src="/images/avatar.jpg" className='w-[40px] h-[40px] rounded-full ' alt="" /> */}
+                            {user?.imageUrl === null ? (<>
+
+                                <img
+                                    src={`https://res.cloudinary.com/moment-images/1_2_r15hh3`}
+                                    alt="Album cover"
+                                    className='w-[40px] h-[40px] rounded-full object-cover'
+                                />
+                            </>) : (
+                                <>
+                                    <img
+                                        src={`https://res.cloudinary.com/moment-images/${user?.imageUrl}`}
+                                        alt="Album cover"
+                                        className='w-[40px] h-[40px] rounded-full object-cover'
+                                    />
+                                </>
+                            )}
+
+
                         </button>
                     </Dropdown>
 

@@ -50,7 +50,7 @@ const DeletePlaylistModal = (props: Props) => {
     return (
         <>
             <Modal
-                title="Đổi tên playlist"
+                title="Xóa playlist"
                 closable={{ 'aria-label': 'Custom Close Button' }}
                 open={isModalOpenDelete}
                 onOk={handleSaveName}

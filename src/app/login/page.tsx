@@ -45,11 +45,11 @@ export default function LoginPage() {
           <LoginForm />
           
           {/* Forgot Password */}
-          <div className="mt-6 text-center">
+          {/* <div className="mt-6 text-center">
             <Link href="/reset-password" className="text-white hover:underline">
               Bạn quên mật khẩu?
             </Link>
-          </div>
+          </div> */}
           
           {/* Sign Up Link */}
           <div className="mt-8 text-center border-t border-gray-800 pt-6">

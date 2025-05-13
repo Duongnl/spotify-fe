@@ -1,11 +1,12 @@
 "use client"
 import Image from 'next/image';
 import SongItem from './song_item';
-import { Play, Plus, Heart } from "lucide-react"
+import { Play, Plus, Heart, Pause } from "lucide-react"
 import RowHomeContent from '../home/RowHomeContent';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQueuebarContext } from '@/context/queuebar-context';
+import { usePlaybarContext } from '@/context/playbar-context';
 
 interface Props {
     res: any
@@ -15,7 +16,7 @@ interface Props {
 
 const AlbumTitle = (props: Props) => {
     const { res, resAlbum } = props
-    const [currentAudioPlaying, setCurrentAudioPlaying] = useState<string>("")
+    // const [currentAudioPlaying, setCurrentAudioPlaying] = useState<string>("")
     console.log("resalbum>>>", resAlbum)
 
     const [rowHomeResponse, setRowHomeResponse] = useState<RowHomeResponse[]>([])
@@ -36,17 +37,38 @@ const AlbumTitle = (props: Props) => {
 
     }, [])
 
-    const {fetchGetQueueTracks, setIdTrackPlay } = useQueuebarContext()
+    const { fetchGetQueueTracks, setIdList, idList,setFirtsTrack } = useQueuebarContext()
+    const { playMusic, isPlaying, currentAudioPlaying } = usePlaybarContext()
 
-    const setNewQueueTracks = (v:any) => {
-        let dataTracks:any = []
-        for (let i = 0; i <res.data.tracks.length; i++) {
-           
-            dataTracks.push(res.data.tracks[i].track)
-        }
-        // setIdTrackPlay(v)
-        fetchGetQueueTracks(dataTracks, v)
+    const setNewQueueTracks = (v: any, play?:any) => {
+
+            if (play) {
+                playMusic(v)
+            }
+
+            let dataTracks: any = []
+
+            for (let i = 0; i < res.data.tracks.length; i++) {
+
+                dataTracks.push(res.data.tracks[i].track)
+            }
+
+            setFirtsTrack (dataTracks, v)
+            setIdList("")
     }
+
+    const checkTrackInAlbum = () => {
+         for (let i = 0; i < res.data.tracks.length; i++) {
+
+               if (res.data.tracks[i].track. id === currentAudioPlaying) {
+                return true;
+               }
+            }
+
+            return false
+    }
+
+
 
 
     return (
@@ -97,13 +119,25 @@ const AlbumTitle = (props: Props) => {
                 </div>
             </div>
             <div className="flex items-center gap-4 p-6 bg-[#0e0e0e] w-full">
-                <button
-                    className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
-                    aria-label="Play"
-                //  onClick={() => {setNewQueueTracks()}}
-                >
-                    <Play className="w-7 h-7 fill-current" />
-                </button>
+                {!(isPlaying && checkTrackInAlbum()) ? (<>
+                    <button
+                        className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
+                        aria-label="Play"
+                        onClick={() => { setNewQueueTracks(res.data.tracks[0].track.id, "playAll") }}
+                    >
+                        <Play className="w-7 h-7 fill-current" />
+                    </button>
+                </>) : (<>
+                    <button
+                        className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
+                        aria-label="Play"
+                        onClick={() => { playMusic(currentAudioPlaying) }}
+                    >
+                        <Pause className="w-7 h-7 fill-current" />
+                    </button>
+                </>)}
+
+
 
                 {/* <button
                     className="flex items-center justify-center px-5  py-2 bg-transparent border border-gray-200 rounded-3xl text-gray-200  hover:text-white hover:border-gray-100 transition-all transform hover:scale-105"

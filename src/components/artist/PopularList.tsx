@@ -124,7 +124,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
     }
   }
 
-  const {fetchGetQueueTracks, setIdTrackPlay } = useQueuebarContext()
+  const {fetchGetQueueTracks,setIdList } = useQueuebarContext()
   
   const setNewQueueTracks = (v: any) => {
     let dataTracks: any = []
@@ -133,10 +133,9 @@ export default function PopularTracksList(props: PopularTracksListProps) {
       dataTracks.push(data.data.tracks[i].track)
     }
     // setIdTrackPlay(v)
+    setIdList("")
     fetchGetQueueTracks(dataTracks, v)
   }
-
-  console.log("PopularTracksList data: ", data);
 
   return (
     <div className="bg-black text-white p-6">
@@ -191,7 +190,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
                 </div>
               </div>
 
-              <div className="text-gray-400 text-sm mr-4">{item.track.playCount}</div>
+              {/* <div className="text-gray-400 text-sm mr-4">{item.track.playCount}</div> */}
 
               {/* Ẩn Plus/Pause và Heart trên mobile */}
               <div className="hidden sm:flex items-center gap-2">
@@ -219,11 +218,7 @@ export default function PopularTracksList(props: PopularTracksListProps) {
                   </button>
                 </Dropdown>
 
-                <button className="h-8 w-8 text-gray-400 opacity-0 group-hover:opacity-100"
-                >
-                  <Plus size={16} />
-                </button>
-
+          
 
 
                 <div className="text-gray-400 text-sm w-10">

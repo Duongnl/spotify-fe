@@ -29,11 +29,13 @@ type FormErrors = {
 
 
 import { useRouter } from 'next/navigation';
+import { useUserContext } from '@/context/user-context';
 
 export default function RegisterForm() {
   const currentYear = new Date().getFullYear();
 
 const router = useRouter();
+ const  {fetchGetUser} = useUserContext()
   
   const [formData, setFormData] = useState<FormData>({
     name:'',
@@ -178,7 +180,9 @@ const router = useRouter();
     const res:any = await RegisterServerActions(request);
     console.log("res >>>> ", res)
     if (res && res.status === 201) {
+      await fetchGetUser()
       router.push('/');
+
     } else {
       setErrors({
         email: res.error.email?.[0],

@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Định nghĩa interface cho Artist
 interface Artist {
   name: string;
   image_file: string;
+  id: string;
 }
 
 // Định nghĩa interface cho Item trong mảng artists
@@ -72,7 +74,10 @@ export default function LyricsPage(props: TrackLyricProps) {
               </div>
               <div>
                 <p className="text-gray-400 text-sm">Artist</p>
+                <Link href={`/artist/${item.artist.id}`}>
                 <p className="text-xl font-semibold">{item.artist.name}</p>
+                </Link>
+                
               </div>
             </div>
           ))}

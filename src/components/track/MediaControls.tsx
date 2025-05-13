@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Play, Pause, Plus, Heart } from "lucide-react";
+import { Play, Pause, Plus, Heart, Download } from "lucide-react";
 import { usePlaybarContext } from "@/context/playbar-context";
 import { useSidebarContext } from "@/context/sidebar-context";
 import { Dropdown, MenuProps } from "antd";
 import API from "@/api/api";
 import cookie from 'js-cookie';
 import { toast } from "react-toastify";
+import { useQueuebarContext } from "@/context/queuebar-context";
 interface TrackMediaProps {
   data: any;
 }
@@ -14,22 +15,20 @@ interface TrackMediaProps {
 export default function MediaControls(props: TrackMediaProps) {
   const { data } = props;
   // const [isPlaying, setIsPlaying] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const handleClick = () => {
+    setIsClicked(!isClicked);
+    console.log ("track file download: ", data.data.track_file);
+  }
   const audioRef = useRef<HTMLAudioElement>(null);
   const { currentAudioPlaying, isPlaying, playMusic,
   } = usePlaybarContext();
 
-  // const handleTogglePlay = () => {
-  //   const audio = audioRef.current;
-  //   if (!audio) return;
+  const { fetchGetQueueTracks, setIdList} = useQueuebarContext()
 
-  //   if (isPlaying) {
-  //     audio.pause();
-  //   } else {
-  //     audio.play();
-  //   }
-  // };
 
   const { playlists } = useSidebarContext();
+
   const [items, setItems] = useState<MenuProps['items']>([])
   useEffect(() => {
     const is: MenuProps['items'] = []
@@ -49,12 +48,14 @@ export default function MediaControls(props: TrackMediaProps) {
 
 
   const handlePlayMusic = () => {
+    fetchGetQueueTracks([],data.data.id)
+    setIdList("")
     playMusic(data.data.id)
   }
 
 
-    const handleAddToPlaylist = async (e: string) => {
-    const request:any = {
+  const handleAddToPlaylist = async (e: string) => {
+    const request: any = {
       playlist_id: e,
       track_id: data.data.id,
       trackNumber: 1
@@ -77,6 +78,22 @@ export default function MediaControls(props: TrackMediaProps) {
       toast.error(`Đã tồn tại trong playlist`)
     }
   }
+
+  // Hàm xử lý tải file trực tiếp
+  const handleDownload = () => {
+    try {
+      const trackUrl = `https://res.cloudinary.com/moment-images/${data.data.track_file}`; // URL file âm thanh
+      const a = document.createElement('a');
+      a.href = trackUrl;
+      a.download = `${data.data.name}.mp3`; // Tên file tải về (giả định định dạng mp3)
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast.success('Tải bài hát thành công!');
+    } catch (error) {
+      toast.error(`Lỗi khi tải bài hát: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
 
   return (
     <div className="flex items-center gap-4 p-6 bg-[#0e0e0e] w-full">
@@ -101,24 +118,32 @@ export default function MediaControls(props: TrackMediaProps) {
         placement="bottomCenter"
         trigger={['click']}
         overlayClassName="user-dropdown"
+        className=" cursor-pointer"
 
       >
-
-        <button
-          className="flex items-center justify-center w-10 h-10 bg-transparent border border-gray-600 rounded-full text-gray-400 hover:text-white hover:border-gray-400 transition-colors"
-          aria-label="Add"
-        >
-          <Plus className="w-5 h-5" />
-        </button>
+        <Plus ></Plus>
       </Dropdown>
 
-
+{/* 
       <button
         className="flex items-center justify-center w-10 h-10 bg-transparent text-gray-400 hover:text-white transition-colors"
         aria-label="More options"
+        onClick={handleClick}
       >
-        <Heart className="w-8 h-8" />
-      </button>
+        <Heart
+          className={`w-8 h-8 ${isClicked ? 'text-red-500' : 'text-gray-400'}`} // Thay đổi màu dựa trên trạng thái
+          fill={isClicked ? 'red' : 'none'} // Điền màu đỏ khi click, nếu không thì không điền
+          stroke={isClicked ? 'red' : 'currentColor'} // Đổi màu viền nếu cần
+        />
+      </button> */}
+{/* 
+      <button
+        className="flex items-center justify-center w-10 h-10 bg-transparent text-gray-400 hover:text-white transition-colors"
+        aria-label="Download"
+        onClick={handleDownload}
+      >
+        <Download className="w-8 h-8 text-gray-400" />
+      </button> */}
 
       {/* Audio Element */}
       {/* <audio ref={audioRef} src={`https://res.cloudinary.com/moment-images/${data.data.track_file}`} /> */}

@@ -7,6 +7,7 @@ import { useScreenSize } from "@/utils/resize";
 import PlayBar from "@/components/shared/play_bar";
 import { usePathname, useRouter } from "next/navigation";
 import QueueBar from "@/components/shared/queue/queue_bar";
+import { useUserContext } from "@/context/user-context";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     const isSmallScreen = useScreenSize("(max-width: 587px)");
@@ -17,6 +18,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     const [isSideBarMobile, setIsSideBarMobile] = useState<boolean | undefined>(undefined);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [isQueueBarOpen, setIsQueueBarOpen] = useState(true)
+    const {user} = useUserContext()
     const pathname = usePathname();
     useEffect(() => {
         setIsSideBarMobile(isSmallScreen);
@@ -63,9 +65,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
 
 
-            <div className={`flex ${(pathname !== "/login" && pathname !== "/signup" ? `${pathname !== "/account/overview" ? `h-[calc(100vh-155px)]` : `h-[calc(100vh-60px)]`}` : `h-screen`)} `}>
+            <div className={`flex ${(pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/profile" ? `${pathname !== "/account/overview" ? `h-[calc(100vh-155px)]` : `h-[calc(100vh-60px)]`}` : `h-screen`)} `}>
                 {/* ✅ Tránh nhấp nháy bằng cách không render khi chưa xác định */}
-                {!(isSideBarMobile && !isSidebarOpen) && pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && (
+                {!(isSideBarMobile && !isSidebarOpen) && pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && pathname != "/account/profile"&& (
                     <div
                         className={
                             !isSideBarMobile
@@ -88,7 +90,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     </div>
                 </div>
                 {
-                    isQueueBarOpen && pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && (
+                    isQueueBarOpen && pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && pathname != "/account/profile" && (
                         <>
                             <div className="flex h-full  pr-2 ">
                                 <QueueBar 
@@ -104,7 +106,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
 
             {
-                pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && (
+                pathname !== "/login" && pathname !== "/signup" && pathname !== "/account/overview" && user?.playbar != null && pathname !== "/account/profile" && (
                     <>
                         <div className="w-full h-[95px]" >
                             <PlayBar 

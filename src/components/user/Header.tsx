@@ -14,13 +14,29 @@ export default function UserHeader(props: HeaderProps) {
 
       <div className="flex flex-col md:flex-row  w-full mx-auto gap-6 items-center">
         <div className="relative w-60 h-60 shrink-0 flex items-center justify-center">
-          <Image
-            src={`https://res.cloudinary.com/moment-images/${data.data.imageUrl}`}
-            alt="Album cover"
-            fill
-            className="object-cover rounded-full"
-            priority
-          />
+
+          {data.data.imageUrl === null ? (
+            <>
+              <Image
+                src={`https://res.cloudinary.com/moment-images/1_2_r15hh3`}
+                alt="Album cover"
+                fill
+                className="object-cover rounded-full"
+                priority
+              />
+
+            </>
+          ) : (<>
+            <Image
+              src={`https://res.cloudinary.com/moment-images/${data.data.imageUrl}`}
+              alt="Album cover"
+              fill
+              className="object-cover rounded-full"
+              priority
+            />
+          </>)}
+
+
         </div>
 
 
@@ -30,10 +46,10 @@ export default function UserHeader(props: HeaderProps) {
           <h3 className="text-4xl font-bold tracking-tight mb-6">{data.data.name}</h3>
 
           <div className="flex items-center gap-3">
-            
+
 
             <div className="flex items-center gap-2 text-gray-300">
-            <span>{playlistCount} Public Playlist{playlistCount !== 1 ? 's' : ''}</span>
+              <span>{playlistCount} Public Playlist{playlistCount !== 1 ? 's' : ''}</span>
             </div>
           </div>
         </div>
