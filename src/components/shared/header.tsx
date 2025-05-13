@@ -3,13 +3,14 @@ import { useScreenSize } from '@/utils/resize';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Space } from 'antd';
 import React, { useState, useEffect, useRef } from "react"; // Import React and useRef
-import { GalleryHorizontalEnd, MoveRight, Plus } from "lucide-react"
+import { GalleryHorizontalEnd, MessageCircleMore, MoveRight, Plus } from "lucide-react"
 import { redirect, usePathname, useRouter } from "next/navigation"; // Import useRouter
 import API from '@/api/api';
 import cookie from "js-cookie"
 import Link from 'next/link';
 import { useUserContext } from '@/context/user-context';
-import Image from 'next/image';
+import Image from 'next/image';import ChatBot from '../AIChat/chatbot';
+
 
 
 interface IProps {
@@ -27,7 +28,8 @@ const Header = (props: IProps) => {
     const [isSearchDesktopOpen, setIsSearchDesktopOpen] = useState(false);
     const [isSearchMobileOpen, setIsSearchMobileOpen] = useState(false);
     // const [search, setSearch] = useState<string>("") // `search` state seems unused, can be removed or used if needed elsewhere
-    const { user } = useUserContext()
+    const { user } = useUserContext()   
+     const [isModalOpen, setIsModalOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter(); // Initialize useRouter
     const isSmallScreen = useScreenSize("(max-width: 587px)");
@@ -39,7 +41,11 @@ const Header = (props: IProps) => {
     const [showDropdown, setShowDropdown] = useState(false);
     // Ref cho container tìm kiếm
     const searchContainerRef = useRef<HTMLDivElement>(null); // Specify type for ref
+    const [isChatBotOpen, setIsChatBotOpen] = useState(false);
 
+    const handleOpenChatBot = () => {
+        setIsChatBotOpen(!isChatBotOpen);
+    };
     const [mockData, setMockData] = useState([
         { type: 'song', name: 'Tell the kids i love them', artist: 'Obito, Shiki' },
         { type: 'song', name: 'Timeless', artist: 'The Weeknd, Playboi Carti' },
@@ -202,6 +208,10 @@ const Header = (props: IProps) => {
         router.push(`/`)
     }
 
+    const handleShowChatBot = () => {
+        setIsModalOpen(true)
+    }
+
 
     return (
         <>
@@ -316,9 +326,16 @@ const Header = (props: IProps) => {
 
                 {/* === Right Section (Notifications, User Dropdown) === */}
                 <div className="flex items-center div-user-noti">
+                    <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'
+                        onClick={() => { handleOpenChatBot() }}
+                    >
+                        <MessageCircleMore />
+                    </button>
+
+
                     {/* <button className='mr-10 ml-10 max-[587px]:mr-5 max-[587px]:ml-2'>
                         <i className=" text-[25px] fa-solid fa-bell"></i>
-                    </button> */}
+                    </button>  */}
 
                     <Dropdown menu={{ items }}
                         placement="bottomRight"
@@ -374,6 +391,14 @@ const Header = (props: IProps) => {
                     </div>
                 )
             }
+            {isChatBotOpen && (
+                <ChatBot
+                    // ... các props khác nếu có ...
+                    onClose={() => setIsChatBotOpen(false)}
+                />
+            )}
+
+
 
         </>
     );
