@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Loại trừ route /login và / khỏi kiểm tra session
-  if (pathname === "/login" || pathname === "/" || pathname ==='/signup') {
+  if (pathname === "/login" || pathname ==='/signup') {
     // Nếu đã đăng nhập và cố truy cập /login, chuyển hướng về /
     if (sessionId && pathname === "/login") {
       return NextResponse.redirect(new URL("/", request.url));
@@ -22,6 +22,7 @@ export async function middleware(request: NextRequest) {
     "/user",
     "/playlist",
     "/account",
+    "/"
   ];
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)

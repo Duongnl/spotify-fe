@@ -38,7 +38,7 @@ export default function SpotifySettings() {
     setCurrentAudioPlaying("")
     fetchGetQueueTracks([],"")
     cookie.remove("session-id");
-    router.push("/login")
+    window.location.reload();
 
   }
 

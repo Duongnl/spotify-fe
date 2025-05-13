@@ -28,6 +28,8 @@ const PlaylistContainer = (props: Props) => {
         setIsModalOpen(true);
     };
 
+
+
     const path = usePathname();
     useEffect(() => {
 
@@ -35,13 +37,13 @@ const PlaylistContainer = (props: Props) => {
         fetchAPi()
     }, [params])
 
-    const { setQueueTracks, fetchGetQueueTracks, setIdList, idList , setFirtsTrack} = useQueuebarContext()
+    const { setQueueTracks, fetchGetQueueTracks, setIdList, idList, setFirtsTrack } = useQueuebarContext()
 
     //    const { fetchGetQueueTracks, setIdTrackPlay, setIdList, idList } = useQueuebarContext()
     const { playMusic, isPlaying, currentAudioPlaying } = usePlaybarContext()
 
     const setNewQueueTracks = (v: any, play?: any) => {
-        if (play && v !== currentAudioPlaying) {
+        if ((play ) ) {
             playMusic(v)
             console.log("play ne >>>>>>")
         }
@@ -53,7 +55,7 @@ const PlaylistContainer = (props: Props) => {
         }
         // setIdTrackPlay(v)
         // if (play ) {
-            setFirtsTrack (dataTracks, v)
+        setFirtsTrack(dataTracks, v)
         // } else {
         //     fetchGetQueueTracks(dataTracks, v)
         // }
@@ -79,15 +81,15 @@ const PlaylistContainer = (props: Props) => {
         setIsModalOpen(true)
     }
 
-        const checkTrackInPlaylist= () => {
-         for (let i = 0; i < res.data.tracks.length; i++) {
+    const checkTrackInPlaylist = () => {
+        for (let i = 0; i < res.data.tracks.length; i++) {
 
-               if (res.data.tracks[i].track. id === currentAudioPlaying) {
+            if (res.data.tracks[i].track.id === currentAudioPlaying) {
                 return true;
-               }
             }
+        }
 
-            return false
+        return false
     }
 
     return (
@@ -114,13 +116,31 @@ const PlaylistContainer = (props: Props) => {
 
                         <div className="flex items-center gap-3">
                             <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-700">
-                                <Image
-                                    src={`https://res.cloudinary.com/moment-images/${res.data.user.imageUrl}`}
-                                    alt="Artist avatar"
-                                    width={32}
-                                    height={32}
-                                    className="object-cover"
-                                />
+
+                                {res.data.user.imageUrl === null ? (
+                                    <>
+                                        <Image
+                                            src={`https://res.cloudinary.com/moment-images/1_2_r15hh3`}
+                                            alt="Artist avatar"
+                                            width={32}
+                                            height={32}
+                                            className="object-cover"
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <Image
+                                            src={`https://res.cloudinary.com/moment-images/${res.data.user.imageUrl}`}
+                                            alt="Artist avatar"
+                                            width={32}
+                                            height={32}
+                                            className="object-cover"
+                                        />
+                                    </>
+                                )}
+
+
+
                             </div>
 
                             <div className="flex items-center gap-2 text-gray-300">

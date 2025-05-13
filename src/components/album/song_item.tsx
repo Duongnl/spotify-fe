@@ -15,7 +15,7 @@ interface Props {
     track: any
     name: string
     fetchAPi?: () => void
-    setNewQueueTracks: (v:any) =>void
+    setNewQueueTracks: (v: any) => void
 }
 
 const SongItem = (props: Props) => {
@@ -29,7 +29,7 @@ const SongItem = (props: Props) => {
 
     const handlePlayMusic = () => {
         setNewQueueTracks(track.track.id)
-    
+
         playMusic(track.track.id)
     }
 
@@ -143,20 +143,35 @@ const SongItem = (props: Props) => {
                 </div>
 
                 <div className="ml-3 flex-grow">
-                    <div className="flex items-center">
-                        
-                        <Link href={`/track/${track.track.id}`} className={`font-medium block truncate max-w-[100px] sm:max-w-none ${(isPlaying && currentAudioPlaying === track.track.id) && `text-[#00c853]`}`}>
+                    {/* Dòng chứa tên bài hát */}
+                    <div>
+                        <Link
+                            href={`/track/${track.track.id}`}
+                            className={`font-medium block truncate max-w-[100px] sm:max-w-none ${isPlaying && currentAudioPlaying === track.track.id ? 'text-[#00c853]' : ''
+                                }`}
+                        >
                             {track.track.title}
                         </Link>
+                    </div>
+
+                    {/* Dòng chứa tên nghệ sĩ */}
+                    <div className="mt-1">
                         {name === 'search' && (
-                            <>
-                            <p className="ml-2 px-1 text-xs bg-gray-600 text-white rounded">{track.track.artists.map((artist: any) => artist.artist.name).join(", ")}</p>
-                            </>
-                        )} 
+                            <p className="text-xs text-gray-500 truncate">
+                                {track.track.artists.map((artist: any) => artist.artist.name).join(', ')}
+                            </p>
+                        )}
+
+                        {name === 'playlist' && (
+                            <p className="text-xs text-gray-500 truncate">
+                                {track.track.artistName.join(', ')}
+                            </p>
+                        )}
                     </div>
                 </div>
 
-                <div className="text-gray-400 text-sm mr-4">{"25,854,267"}</div>
+
+                {/* <div className="text-gray-400 text-sm mr-4">{"25,854,267"}</div> */}
 
                 {/* Ẩn Plus và Heart trên mobile */}
                 <div className="hidden sm:flex items-center gap-2">

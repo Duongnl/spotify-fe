@@ -28,6 +28,7 @@ export default function ProfileEdit() {
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);   
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
@@ -52,7 +53,7 @@ export default function ProfileEdit() {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             setSelectedImage(file);
-            
+
             // Tạo URL preview cho hình ảnh
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -62,8 +63,47 @@ export default function ProfileEdit() {
         }
     };
 
+    const uploadToCloudinary = async (file: File): Promise<string | null> => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "moment"); // preset bạn đã tạo trong Cloudinary
+
+        try {
+            const res = await fetch("https://api.cloudinary.com/v1_1/moment-images/image/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                return data.public_id; // hoặc data.secure_url nếu bạn muốn dùng URL đầy đủ
+            } else {
+                console.error("Upload error:", data);
+                return null;
+            }
+        } catch (err) {
+            console.error("Upload failed:", err);
+            return null;
+        }
+    };
+
+
     const handleSubmit = async (e: React.FormEvent) => {
+        setIsLoading(true)
         e.preventDefault();
+
+        let uploadedImageId = user?.imageUrl || null;
+
+        if (selectedImage) {
+            const publicId = await uploadToCloudinary(selectedImage);
+            if (publicId) {
+                uploadedImageId = publicId;
+            } else {
+                alert("Không thể upload ảnh. Vui lòng thử lại.");
+                return;
+            }
+        }
+
         if (!user || !user.id) {
             toast.error("User or user ID is not available");
             return;
@@ -84,18 +124,19 @@ export default function ProfileEdit() {
         try {
             // Tạo FormData nếu có hình ảnh để tải lên
             const formData = new FormData();
-            
+
             // Thêm các trường dữ liệu khác vào formData
             formData.append('name', user.name);
             formData.append('email', user.email);
             formData.append('birthDay', user.birthDay);
             formData.append('gender', user.gender);
-            
+            formData.append('imageUrl', uploadedImageId);
+
             // Chỉ gửi password nếu người dùng nhập mật khẩu mới
             if (password) {
                 formData.append('password', password);
             }
-            
+
             // Thêm hình ảnh vào formData nếu đã chọn
             if (selectedImage) {
                 formData.append('image', selectedImage);
@@ -130,13 +171,14 @@ export default function ProfileEdit() {
         } catch (error) {
             toast.error(`Lỗi kết nối: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
+          setIsLoading(false)
     };
 
     const genders = ['MALE', 'FEMALE', 'OTHER'];
 
     return (
         <>
-            <div className="min-h-screen bg-black text-white flex justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-black text-white flex justify-center py-12 px-4 sm:px-6 lg:px-8 ">
                 <div className="max-w-2xl w-full space-y-8">
                     <Head>
                         <title>Chỉnh sửa hồ sơ</title>
@@ -326,9 +368,9 @@ export default function ProfileEdit() {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-8 py-3 rounded-full text-white bg-green-500 hover:bg-green-600"
+                                    className= {`px-8 py-3 rounded-full text-white bg-green-500 hover:bg-green-600 ${isLoading && `disabled`}`}
                                 >
-                                    Lưu hồ sơ
+                                   {isLoading ? 'Đang lưu hồ sơ ... ':'Lưu hồ sơ'} 
                                 </button>
                             </div>
                         </form>
