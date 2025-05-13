@@ -4,6 +4,7 @@ import Image from "next/image"
 import { ChevronRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import Link from "next/link"
 
 // interface Release {
 //   title: string
@@ -23,9 +24,9 @@ export default function RowHomeContent(props: Props) {
   const router = useRouter()
 
 
-  const Link = (e: string, link: string) => {
-    router.push(`${link}${e}`)
-  }
+  // const Link = (e: string, link: string) => {
+  //   router.push(`${link}${e}`)
+  // }
 
   return (
     <div className="bg-[#121212] text-white p-6">
@@ -40,26 +41,28 @@ export default function RowHomeContent(props: Props) {
       <div className="w-full pb-4">
         <div className="flex gap-4 scroll-on-hover">
           {rowHomeResponse.map((release: any, index: any) => (
-            <div
-              key={index}
-              className="group cursor-pointer w-40 flex-shrink-0" // w-40 = 160px
-              onClick={() => Link(release.id, release.link)}
-            >
-              <div className="relative aspect-square mb-4 w-full">
-                <Image
-                  src={`https://res.cloudinary.com/moment-images/${release.img}`}
-                  alt={release.title1}
-                  fill
-                  className="object-cover rounded-md transition-transform group-hover:scale-105"
-                />
+            <Link href={`${release.link}/${release.id}`} >
+              <div
+                key={index}
+                className="group cursor-pointer w-40 flex-shrink-0" // w-40 = 160px
+                // onClick={() => Link(release.id, release.link)}
+              >
+                <div className="relative aspect-square mb-4 w-full">
+                  <Image
+                    src={`https://res.cloudinary.com/moment-images/${release.img}`}
+                    alt={release.title1}
+                    fill
+                    className="object-cover rounded-md transition-transform group-hover:scale-105"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-medium line-clamp-2 group-hover:text-white">
+                    {release.title1}
+                  </h3>
+                  <p className="text-sm text-gray-400">{release.title2}</p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <h3 className="font-medium line-clamp-2 group-hover:text-white">
-                  {release.title1}
-                </h3>
-                <p className="text-sm text-gray-400">{release.title2}</p>
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

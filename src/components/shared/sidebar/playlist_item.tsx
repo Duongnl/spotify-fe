@@ -1,6 +1,7 @@
 "use client"
 import { useQueuebarContext } from "@/context/queuebar-context"
 import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 interface IProps {
@@ -18,8 +19,9 @@ const PlaylistItem = (props: IProps) => {
     }
     return (
         <>
+        <Link href={`/playlist/${playlist.id}`}>
                 <div className={`flex items-center gap-4 mt-4 cursor-pointer ${!isSidebarOpen && `flex-col`}`} 
-                onClick={() => {link()}}
+                // onClick={() => {link()}}
                 >
                 <div className="relative rounded-full overflow-hidden">
                     <Image
@@ -43,6 +45,7 @@ const PlaylistItem = (props: IProps) => {
                 }
 
             </div>
+            </Link>
         </>
     )
 }
