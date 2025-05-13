@@ -1,7 +1,7 @@
 "use client"
 import Image from 'next/image';
 import cookie from 'js-cookie';
-import { Play, Plus, Heart, Delete, Circle, CircleX } from "lucide-react"
+import { Play, Plus, Heart, Delete, Circle, CircleX, Pause } from "lucide-react"
 import RowHomeContent from '../home/RowHomeContent';
 import SongItem from '../album/song_item';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import API from '@/api/api';
 import { useQueuebarContext } from '@/context/queuebar-context';
 import EditPlaylistModal from './edit_playlist_modal';
 import DeletePlaylistModal from './delete_playlist_modal';
+import { usePlaybarContext } from '@/context/playbar-context';
 
 interface Props {
     response: any
@@ -22,7 +23,7 @@ const PlaylistContainer = (props: Props) => {
     const [res, setRes] = useState<any>(response)
     const [nameValue, setNameValue] = useState(res.data.name)
     const [isModalOpen, setIsModalOpen] = useState(false);
-        const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
+    const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -34,16 +35,29 @@ const PlaylistContainer = (props: Props) => {
         fetchAPi()
     }, [params])
 
-    const { setQueueTracks, fetchGetQueueTracks, setIdTrackPlay } = useQueuebarContext()
+    const { setQueueTracks, fetchGetQueueTracks, setIdList, idList , setFirtsTrack} = useQueuebarContext()
 
-    const setNewQueueTracks = (v: any) => {
+    //    const { fetchGetQueueTracks, setIdTrackPlay, setIdList, idList } = useQueuebarContext()
+    const { playMusic, isPlaying, currentAudioPlaying } = usePlaybarContext()
+
+    const setNewQueueTracks = (v: any, play?: any) => {
+        if (play && v !== currentAudioPlaying) {
+            playMusic(v)
+            console.log("play ne >>>>>>")
+        }
+
         let dataTracks = []
         for (let i = 0; i < res.data.tracks.length; i++) {
 
             dataTracks.push(res.data.tracks[i].track)
         }
         // setIdTrackPlay(v)
-        fetchGetQueueTracks(dataTracks, v)
+        // if (play ) {
+            setFirtsTrack (dataTracks, v)
+        // } else {
+        //     fetchGetQueueTracks(dataTracks, v)
+        // }
+        setIdList(res.data.id)
     }
 
     const fetchAPi = async () => {
@@ -63,6 +77,17 @@ const PlaylistContainer = (props: Props) => {
 
     const handleEditPlaylist = () => {
         setIsModalOpen(true)
+    }
+
+        const checkTrackInPlaylist= () => {
+         for (let i = 0; i < res.data.tracks.length; i++) {
+
+               if (res.data.tracks[i].track. id === currentAudioPlaying) {
+                return true;
+               }
+            }
+
+            return false
     }
 
     return (
@@ -114,19 +139,32 @@ const PlaylistContainer = (props: Props) => {
                 </div>
             </div>
             <div className="flex items-center gap-4 p-6 bg-[#0e0e0e] w-full">
-                <button
-                    className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
-                    aria-label="Play"
-                //  onClick={() => {setNewQueueTracks()}}
 
-                >
-                    <Play className="w-7 h-7 fill-current" />
-                </button>
+                {!(isPlaying && idList === res.data.id) ? (<>
+                    <button
+                        className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
+                        aria-label="Play"
+                        onClick={() => { setNewQueueTracks(res.data.tracks[0].track.id, 'playAll') }}
+                    >
+                        <Play className="w-7 h-7 fill-current" />
+                    </button>
+                </>) : (<>
+                    <button
+                        className="flex items-center justify-center w-14 h-14 bg-[#00e676] rounded-full text-black hover:bg-[#00c853] ml-4 transition-all transform hover:scale-105"
+                        aria-label="Play"
+                        onClick={() => { playMusic(currentAudioPlaying) }}
+                    >
+                        <Pause className="w-7 h-7 fill-current" />
+                    </button>
+                </>)}
+
+
+
 
                 <button
                     className="ml-4 w-10 h-10 flex items-center justify-center rounded-full bg-black text-white transition-transform duration-200 hover:scale-105"
                     aria-label="Remove"
-                onClick={() => {setIsModalOpenDelete(true)}}
+                    onClick={() => { setIsModalOpenDelete(true) }}
                 >
                     <CircleX className="w-7 h-7" />
                 </button>
