@@ -10,6 +10,7 @@ import cookie from "js-cookie";
 
 // Định nghĩa interface cho updatedUser
 interface UpdatedUser {
+    image?: File | null;
     name: string;
     email: string;
     birthDay: string;
@@ -20,10 +21,13 @@ interface UpdatedUser {
 export default function ProfileEdit() {
     const router = useRouter();
     const { user, setUser } = useUserContext();
+    console.log("user update data:", user);
 
     // State riêng cho password và passwordConfirm
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
@@ -42,6 +46,20 @@ export default function ProfileEdit() {
 
     const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPasswordConfirm(e.target.value);
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setSelectedImage(file);
+            
+            // Tạo URL preview cho hình ảnh
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -64,27 +82,32 @@ export default function ProfileEdit() {
         }
 
         try {
-            // Khai báo updatedUser với kiểu UpdatedUser
-            const updatedUser: UpdatedUser = {
-                name: user.name,
-                email: user.email,
-                birthDay: user.birthDay,
-                gender: user.gender,
-            };
-
+            // Tạo FormData nếu có hình ảnh để tải lên
+            const formData = new FormData();
+            
+            // Thêm các trường dữ liệu khác vào formData
+            formData.append('name', user.name);
+            formData.append('email', user.email);
+            formData.append('birthDay', user.birthDay);
+            formData.append('gender', user.gender);
+            
             // Chỉ gửi password nếu người dùng nhập mật khẩu mới
             if (password) {
-                updatedUser.password = password;
+                formData.append('password', password);
+            }
+            
+            // Thêm hình ảnh vào formData nếu đã chọn
+            if (selectedImage) {
+                formData.append('image', selectedImage);
             }
 
             const response = await fetch(`${API.USER.UPDATE_USER(user.id)}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}`,
-                    'Accept': 'application/json, text/plain, */*',
+                    // Không đặt 'Content-Type': 'application/json' vì đang sử dụng FormData
                 },
-                body: JSON.stringify(updatedUser),
+                body: formData,
             });
 
             const result = await response.json();
@@ -124,6 +147,58 @@ export default function ProfileEdit() {
                         <h1 className="text-5xl font-bold mb-10">Chỉnh sửa hồ sơ</h1>
 
                         <form onSubmit={handleSubmit}>
+                            {/* Hình ảnh đại diện */}
+                            <div className="mb-6 flex justify-center">
+                                <div className="relative">
+                                    <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-600">
+                                        {previewImage ? (
+                                            <img
+                                                src={previewImage}
+                                                alt="Profile Preview"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : user?.imageUrl ? (
+                                            <img
+                                                src={`https://res.cloudinary.com/moment-images/${user.imageUrl}`}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                                                <span className="text-gray-400">No Image</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <label
+                                        htmlFor="image"
+                                        className="absolute bottom-0 right-0 bg-green-500 rounded-full p-2 cursor-pointer"
+                                    >
+                                        <svg
+                                            className="w-6 h-6 text-white"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"
+                                            />
+                                        </svg>
+                                        <input
+                                            type="file"
+                                            id="image"
+                                            name="image"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleImageChange}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
                             <div className="mb-6">
                                 <label htmlFor="username" className="block text-sm mb-2 text-gray-300">
                                     Tên đăng nhập
