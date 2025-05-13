@@ -4,7 +4,7 @@ import { Instagram, Twitter, Facebook } from "lucide-react"
 export default function SpotifyFooter() {
   return (
     
-    <footer className="bg-black text-white py-6 px-10 bottom-0 w-full h-[300px]">
+    <footer className="bg-black text-white py-6 px-10 bottom-0 w-full h-[362px]">
 
       <div className="max-w-7xl mx-auto pb-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">

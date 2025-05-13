@@ -7,7 +7,8 @@ import { GalleryHorizontalEnd, MoveRight, Plus } from "lucide-react"
 import { redirect, usePathname, useRouter } from "next/navigation"; // Import useRouter
 import API from '@/api/api';
 import cookie from "js-cookie"
-
+import Link from 'next/link';
+import { useUserContext } from '@/context/user-context';
 
 
 interface IProps {
@@ -25,7 +26,7 @@ const Header = (props: IProps) => {
     const [isSearchDesktopOpen, setIsSearchDesktopOpen] = useState(false);
     const [isSearchMobileOpen, setIsSearchMobileOpen] = useState(false);
     // const [search, setSearch] = useState<string>("") // `search` state seems unused, can be removed or used if needed elsewhere
-
+    const {user}= useUserContext()
     const pathname = usePathname();
     const router = useRouter(); // Initialize useRouter
     const isSmallScreen = useScreenSize("(max-width: 587px)");
@@ -181,17 +182,17 @@ const Header = (props: IProps) => {
         {
             key: '1',
             label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                <Link  rel="noopener noreferrer" href={"/account/overview"}>
                     Tài khoản
-                </a>
+                </Link>
             ),
         },
         {
             key: '2',
             label: (
-                <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+                <Link  rel="noopener noreferrer" href={`/user/${user?.id}`}>
                     Hồ sơ
-                </a>
+                </Link>
             ),
         },
     ];
