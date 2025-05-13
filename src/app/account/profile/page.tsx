@@ -8,9 +8,22 @@ import API from '@/api/api';
 import { toast } from 'react-toastify';
 import cookie from "js-cookie";
 
+// Định nghĩa interface cho updatedUser
+interface UpdatedUser {
+    name: string;
+    email: string;
+    birthDay: string;
+    gender: string;
+    password?: string; // password là tùy chọn
+}
+
 export default function ProfileEdit() {
     const router = useRouter();
     const { user, setUser } = useUserContext();
+
+    // State riêng cho password và passwordConfirm
+    const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
@@ -23,10 +36,24 @@ export default function ProfileEdit() {
         });
     };
 
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+    };
+
+    const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPasswordConfirm(e.target.value);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!user || !user.id) {
             toast.error("User or user ID is not available");
+            return;
+        }
+
+        // Xác nhận mật khẩu
+        if (password && password !== passwordConfirm) {
+            toast.error("Mật khẩu xác nhận không khớp!");
             return;
         }
 
@@ -37,6 +64,19 @@ export default function ProfileEdit() {
         }
 
         try {
+            // Khai báo updatedUser với kiểu UpdatedUser
+            const updatedUser: UpdatedUser = {
+                name: user.name,
+                email: user.email,
+                birthDay: user.birthDay,
+                gender: user.gender,
+            };
+
+            // Chỉ gửi password nếu người dùng nhập mật khẩu mới
+            if (password) {
+                updatedUser.password = password;
+            }
+
             const response = await fetch(`${API.USER.UPDATE_USER(user.id)}`, {
                 method: 'PUT',
                 headers: {
@@ -44,20 +84,14 @@ export default function ProfileEdit() {
                     'Authorization': `Bearer ${accessToken}`,
                     'Accept': 'application/json, text/plain, */*',
                 },
-                body: JSON.stringify({
-                    name: user.name,
-                    email: user.email,
-                    password: user.password || undefined,
-                    birthDay: user.birthDay,
-                    gender: user.gender,
-                }),
+                body: JSON.stringify(updatedUser),
             });
 
             const result = await response.json();
             if (response.ok && result.status === 200) {
                 setUser(result.data);
                 toast.success('Lưu hồ sơ thành công!', {
-                    onClose: () => router.push('/account/overview'), // Chuyển hướng sau khi toast đóng
+                    onClose: () => router.push('/account/overview'),
                 });
             } else {
                 if (result.error && typeof result.error === 'object') {
@@ -136,14 +170,30 @@ export default function ProfileEdit() {
                             {/* Mật khẩu */}
                             <div className="mb-6">
                                 <label htmlFor="password" className="block text-sm mb-2 text-gray-300">
-                                    Mật khẩu
+                                    Mật khẩu mới (để trống nếu không thay đổi)
                                 </label>
                                 <input
                                     type="password"
                                     id="password"
                                     name="password"
-                                    value={user?.password || ''}
-                                    onChange={handleChange}
+                                    value={password}
+                                    onChange={handlePasswordChange}
+                                    placeholder="••••••••"
+                                    className="w-full bg-gray-800 border border-gray-600 rounded py-3 px-4 text-white focus:outline-none focus:ring-green-500 focus:border-green-500"
+                                />
+                            </div>
+
+                            {/* Xác nhận mật khẩu */}
+                            <div className="mb-6">
+                                <label htmlFor="passwordConfirm" className="block text-sm mb-2 text-gray-300">
+                                    Xác nhận mật khẩu mới
+                                </label>
+                                <input
+                                    type="password"
+                                    id="passwordConfirm"
+                                    name="passwordConfirm"
+                                    value={passwordConfirm}
+                                    onChange={handlePasswordConfirmChange}
                                     placeholder="••••••••"
                                     className="w-full bg-gray-800 border border-gray-600 rounded py-3 px-4 text-white focus:outline-none focus:ring-green-500 focus:border-green-500"
                                 />
