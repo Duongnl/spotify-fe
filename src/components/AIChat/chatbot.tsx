@@ -1,11 +1,14 @@
 // src/components/AIChat/Chatbox.tsx
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Draggable from "react-draggable";
 import { Resizable } from "re-resizable";
 import { usePlaybarContext } from "@/context/playbar-context"; // Giữ nguyên nếu bạn dùng context này
+import { ChatBot } from "./chatbot_server_actions";
+import cookie from "js-cookie";
+import API from "@/api/api";
 
 interface ChatboxProps {
   onClose: () => void;
@@ -22,6 +25,8 @@ const Chatbox: React.FC<ChatboxProps> = ({ onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(false); // Thêm state loading
   const messagesEndRef = useRef<HTMLDivElement>(null); // Ref để cuộn tự động
+  const [tracks, setTracks] = useState<any>([])
+  const [chatHistory, setChatHistory] = useState<string[]>([]);
 
   const portalRoot = useRef<HTMLDivElement>(document.createElement("div"));
 
@@ -41,6 +46,46 @@ const Chatbox: React.FC<ChatboxProps> = ({ onClose }) => {
   }, [messages]);
 
 
+  useEffect(() => {
+    const fetchTracks = async () => {
+      const resTracks = await fetch(API.TRACK.GET_TRACK_ARTISTS, {
+        method: "GET", // Đúng phương thức POST
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json", // Đặt Content-Type là JSON
+          Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+        },
+      });
+      const dataTracks = await resTracks.json();
+
+
+      const resAlbums = await fetch(API.ALBUM.ALBUM_BASIC, {
+        method: "GET", // Đúng phương thức POST
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json", // Đặt Content-Type là JSON
+          Authorization: `Bearer ${cookie.get("session-id")}`, // Set Authorization header
+        },
+      });
+      const dataAlbums = await resAlbums.json();
+        const prompt = `
+    Hệ thống của tôi là một ứng dụng Spotify clone.
+    Dưới đây là dữ liệu object chứa thông tin các bài hát (tracks) và các chi tiết liên quan trong hệ thống của tôi.
+    Tôi muốn bạn ghi nhớ dữ liệu này để trả lời các câu hỏi tiếp theo có liên quan.
+
+    Đây là dữ liệu tracks:
+    ${JSON.stringify(dataTracks, null, 2)}
+    Đây là dữ liệu album : 
+     ${JSON.stringify(dataAlbums, null, 2)}
+  `;
+        setChatHistory([prompt]);
+        // const data: any = await ChatBot(prompt)
+      
+    }
+    fetchTracks()
+  }, [])
+
+
   if (!isVisible) return null;
 
   const closeChatbox = () => {
@@ -57,47 +102,39 @@ const Chatbox: React.FC<ChatboxProps> = ({ onClose }) => {
     // Thêm tin nhắn của người dùng vào danh sách tin nhắn
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setUserMessage(""); // Xóa nội dung input
-    setIsLoading(true); // Bắt đầu trạng thái loading
+    // setIsLoading(true); // Bắt đầu trạng thái loading
+    // const res =  await handleSubmit(messageToSend);
+    const fullPrompt = [...chatHistory, messageToSend].join('\n');
+    const data: any = await ChatBot(fullPrompt)
 
-    try {
-      // **Gửi tin nhắn đến API Route backend /api/chat**
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: messageToSend }),
-      });
+    const aiMessage: Message = { text: data, sender: 'ai' };
+    setMessages((prevMessages) => [...prevMessages, aiMessage]);
+    setChatHistory((prev) => [...prev, messageToSend, data]);
 
-      if (!response.ok) {
-        // Xử lý lỗi nếu API backend gặp vấn đề
-        const errorData = await response.json();
-        console.error('Error from backend API:', errorData.error);
-        const errorMessage: Message = { text: 'Đã xảy ra lỗi từ máy chủ AI.', sender: 'ai' };
-        setMessages((prevMessages) => [...prevMessages, errorMessage]);
-        return; // Dừng xử lý nếu có lỗi
-      }
 
-      const data = await response.json();
-      const aiResponseText = data.response; // Lấy phản hồi từ backend
-
-      // **Thêm phản hồi của AI vào danh sách tin nhắn**
-      const aiMessage: Message = { text: aiResponseText, sender: 'ai' };
-      setMessages((prevMessages) => [...prevMessages, aiMessage]);
-
-    } catch (error) {
-      console.error('Error sending message to backend:', error);
-      const errorMessage: Message = { text: 'Không thể kết nối đến dịch vụ AI.', sender: 'ai' };
-      setMessages((prevMessages) => [...prevMessages, errorMessage]);
-    } finally {
-      setIsLoading(false); // Kết thúc trạng thái loading
-    }
   };
+
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSendMessage();
     }
+  };
+
+  const [input, setInput] = useState('');
+  const [result, setResult] = useState('');
+
+  const handleGenerate = async () => {
+
+    // const res = await fetch(`/api/gemini/${process.env.API_SECRET}`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ prompt: input }),
+    // });
+
+    // const data = await res.json();
+    // const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+    // setResult(text);
   };
 
 
@@ -230,7 +267,8 @@ const Chatbox: React.FC<ChatboxProps> = ({ onClose }) => {
                 borderRadius: "4px",
                 border: "1px solid #ccc",
                 marginRight: "10px",
-                fontSize: "14px"
+                fontSize: "14px",
+                color: "black"
               }}
             />
             <button

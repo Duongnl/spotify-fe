@@ -4,6 +4,6 @@ const ALBUM_API = {
   GET_ALBUM: (id: string) => `${BASE_URL}/albums/${id}`,
   GET_ALBUMS :`${BASE_URL}/albums`,
   ALBUM_TRACK :`${BASE_URL}/album-tracks/check-exists/`,
-  
+  ALBUM_BASIC : `${BASE_URL}/albums/basic-with-tracks/`
 };
 export default ALBUM_API;
